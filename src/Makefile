@@ -5,7 +5,7 @@ LDFLAGS =
 SRC = $(wildcard *.cpp)
 HEADERS = $(wildcard *.hpp)
 TARGET = main
-
+VALGRIND_CMD = valgrind --leak-check=yes --log-file=valgrind.rpt
 all: $(TARGET)
 
 $(TARGET): $(SRC)
@@ -15,4 +15,8 @@ clean:
 	rm -f $(TARGET)
 
 .PHONY: all clean
+
+memLeak: $(TARGET)
+	@read -p "Enter file: " input_args; \
+	$(VALGRIND_CMD) ./$(TARGET) $$input_args
 

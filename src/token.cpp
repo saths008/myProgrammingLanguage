@@ -1,41 +1,33 @@
+#include "token.hpp"
 #include "tokentype.hpp"
 #include <iostream>
 #include <any>
-class Token
+Token::Token(TokenType type, int line, std::any data)
 {
-private:
-    TokenType type;
-    int line;
-    std::any data;
+    this->data = data;
+    this->line = line;
+    this->type = type;
+}
 
-public:
-    Token(TokenType type, int line, std::any data)
-    {
-        this->data = data;
-        this->line = line;
-        this->type = type;
-    }
+TokenType Token::getType()
+{
+    return this->type;
+}
+int Token::getLine()
+{
+    return this->line;
+}
 
-    TokenType getType()
+template <typename T>
+T Token::getData()
+{
+    try
     {
-        return this->type;
+        return std::any_cast<T>(data);
     }
-    int getLine()
+    catch (const std::bad_any_cast &e)
     {
-        return this->line;
+        std::cout << e.what() << '\n';
+        return NULL;
     }
-
-    template <typename T>
-    T getData()
-    {
-        try
-        {
-            return std::any_cast<T>(data);
-        }
-        catch (const std::bad_any_cast &e)
-        {
-            std::cout << e.what() << '\n';
-            return NULL;
-        }
-    }
-};
+}
