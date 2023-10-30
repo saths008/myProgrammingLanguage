@@ -31,7 +31,7 @@ public:
     void initialiseKeywordMap();
     TokenType matchKeyword(std::string tokenWord);
     void scanTokens();
-    std::unique_ptr<string> getCurrentSubstr() const;
+    std::unique_ptr<std::string> getCurrentSubstr() const;
     void scanToken();
     void printOutTokens() const;
     /*
