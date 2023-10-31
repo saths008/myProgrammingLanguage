@@ -14,6 +14,8 @@ private:
     std::string sourceFile;
     bool hadError;
     std::unique_ptr<std::vector<Token *>> tokenList;
+    // List of all errors
+    std::unique_ptr<std::vector<std::string *>> errorList;
     std::unique_ptr<std::unordered_map<std::string, TokenType>> keywordMap;
     int start;
     int current;
@@ -31,9 +33,10 @@ public:
     void initialiseKeywordMap();
     TokenType matchKeyword(std::string tokenWord);
     void scanTokens();
-    std::unique_ptr<std::string> getCurrentSubstr() const;
+    std::string getCurrentSubstr() const;
     void scanToken();
     void printOutTokens() const;
+    std::string generateError(std::string *message) const;
     /*
     Checks if the current index is in
     range of the source file
@@ -49,7 +52,7 @@ public:
     Returns NULL if the next char is
     out of bounds.
     */
-    char *peek();
+    char peek();
     /*
     Returns the char if current is now
     in range.
@@ -58,7 +61,7 @@ public:
 
     Also increments the current pointer.
     */
-    char *advance();
+    char advance();
     /*
     Check if the char at the current
     pointer is equal to expected.
@@ -69,6 +72,10 @@ public:
 
     void addNumber();
     void addString();
+    void addToken(TokenType type, int line, std::any data);
+    void addError(std::string errorMessage);
+    // Scans all the tokens, then prints them out.
+    void scanFile();
 };
 
 std::ostream &operator<<(std::ostream &s, Scanner const &scanner);

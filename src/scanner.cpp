@@ -24,7 +24,11 @@ std::string Scanner::getSourceFile() const
 {
     return sourceFile;
 }
-
+void Scanner::scanFile()
+{
+    this->scanTokens();
+    this->printOutTokens();
+}
 bool Scanner::getHadError() const
 {
     return hadError;
@@ -65,24 +69,26 @@ bool Scanner::isInRange(int input) const
     return input <= this->lenOfFile - 1;
 }
 
-char *Scanner::peek()
+char Scanner::peek()
 {
-    return isInRange() ? &(this->sourceFile[this->current]) : nullptr;
+    return isInRange() ? this->sourceFile[this->current] : '\0';
 }
 
-char *Scanner::advance()
+char Scanner::advance()
 {
 
-    char *currentCharPtr = isInRange() ? &(this->sourceFile[this->current]) : nullptr;
+    char currentChar = isInRange() ? (this->sourceFile[this->current]) : '\0';
     this->current++;
-    return currentCharPtr;
+    return currentChar;
 }
 
 void Scanner::scanTokens()
 {
-
+    int counter = 0;
     while (isInRange())
     {
+        cout << "Counter: " << counter++ << endl;
+        cout << "Current: " << this->current << endl;
         this->start = this->current;
         this->scanToken();
     }
@@ -90,183 +96,212 @@ void Scanner::scanTokens()
 
 void Scanner::scanToken()
 {
-    char *currentCharPtr = this->advance();
-    if (currentCharPtr == nullptr)
+    cout << "In scanToken()" << endl;
+    char currentChar = this->advance();
+    if (currentChar == '\0')
     {
         return;
     }
     // Match unary operators.
-    else if (*currentCharPtr == '(')
+    else if (currentChar == '(')
     {
-        Token token(TokenType::LEFT_PAREN, this->currentLine, NULL);
-        this->tokenList->push_back(&token);
+        this->addToken(TokenType::LEFT_PAREN, this->currentLine, nullptr);
     }
-    else if (*currentCharPtr == ')')
+    else if (currentChar == ')')
     {
-        Token token(TokenType::RIGHT_PAREN, this->currentLine, NULL);
-        this->tokenList->push_back(&token);
+        this->addToken(TokenType::RIGHT_PAREN, this->currentLine, nullptr);
     }
-    else if (*currentCharPtr == '{')
+    else if (currentChar == '{')
     {
-        Token token(TokenType::LEFT_BRACE, this->currentLine, NULL);
-        this->tokenList->push_back(&token);
+        this->addToken(TokenType::LEFT_BRACE, this->currentLine, nullptr);
     }
-    else if (*currentCharPtr == '}')
+    else if (currentChar == '}')
     {
-        Token token(TokenType::RIGHT_BRACE, this->currentLine, NULL);
-        this->tokenList->push_back(&token);
+
+        this->addToken(TokenType::RIGHT_BRACE, this->currentLine, nullptr);
     }
-    else if (*currentCharPtr == ',')
+    else if (currentChar == ',')
     {
-        Token token(TokenType::COMMA, this->currentLine, NULL);
-        this->tokenList->push_back(&token);
+        this->addToken(TokenType::COMMA, this->currentLine, nullptr);
     }
-    else if (*currentCharPtr == '.')
+    else if (currentChar == '.')
     {
-        Token token(TokenType::DOT, this->currentLine, NULL);
-        this->tokenList->push_back(&token);
+        this->addToken(TokenType::DOT, this->currentLine, nullptr);
     }
-    else if (*currentCharPtr == '-')
+    else if (currentChar == '-')
     {
-        Token token(TokenType::MINUS, this->currentLine, NULL);
-        this->tokenList->push_back(&token);
+        this->addToken(TokenType::MINUS, this->currentLine, nullptr);
     }
-    else if (*currentCharPtr == '+')
+    else if (currentChar == '+')
     {
-        Token token(TokenType::PLUS, this->currentLine, NULL);
-        this->tokenList->push_back(&token);
+        this->addToken(TokenType::PLUS, this->currentLine, nullptr);
     }
-    else if (*currentCharPtr == '*')
+    else if (currentChar == '*')
     {
-        Token token(TokenType::STAR, this->currentLine, NULL);
-        this->tokenList->push_back(&token);
+        this->addToken(TokenType::STAR, this->currentLine, nullptr);
     }
-    else if (*currentCharPtr == ';')
+    else if (currentChar == ';')
     {
-        Token token(TokenType::SEMICOLON, this->currentLine, NULL);
-        this->tokenList->push_back(&token);
+        this->addToken(TokenType::SEMICOLON, this->currentLine, nullptr);
     }
     // Operators with 2 chars
-    else if (*currentCharPtr == '!')
+    else if (currentChar == '!')
     {
         if (this->match('='))
         {
-            Token token(TokenType::BANG_EQUAL, this->currentLine, NULL);
-            this->tokenList->push_back(&token);
+            this->addToken(TokenType::BANG_EQUAL, this->currentLine, nullptr);
         }
         else
         {
-            Token token(TokenType::BANG, this->currentLine, NULL);
-            this->tokenList->push_back(&token);
+            this->addToken(TokenType::BANG, this->currentLine, nullptr);
         }
     }
-    else if (*currentCharPtr == '=')
+    else if (currentChar == '=')
     {
         if (this->match('='))
         {
-            Token token(TokenType::EQUAL_EQUAL, this->currentLine, NULL);
-            this->tokenList->push_back(&token);
+            this->addToken(TokenType::EQUAL_EQUAL, this->currentLine, nullptr);
         }
         else
         {
-            Token token(TokenType::EQUAL, this->currentLine, NULL);
-            this->tokenList->push_back(&token);
+            this->addToken(TokenType::EQUAL, this->currentLine, nullptr);
         }
     }
-    else if (*currentCharPtr == '<')
+    else if (currentChar == '<')
     {
         if (this->match('='))
         {
-            Token token(TokenType::LESS_EQUAL, this->currentLine, NULL);
-            this->tokenList->push_back(&token);
+            this->addToken(TokenType::LESS_EQUAL, this->currentLine, nullptr);
         }
         else
         {
-            Token token(TokenType::LESS, this->currentLine, NULL);
-            this->tokenList->push_back(&token);
+            this->addToken(TokenType::LESS, this->currentLine, nullptr);
         }
     }
-    else if (*currentCharPtr == '>')
+    else if (currentChar == '>')
     {
         if (this->match('='))
         {
-            Token token(TokenType::GREATER_EQUAL, this->currentLine, NULL);
-            this->tokenList->push_back(&token);
+            this->addToken(TokenType::GREATER_EQUAL, this->currentLine, nullptr);
         }
         else
         {
-            Token token(TokenType::GREATER, this->currentLine, NULL);
-            this->tokenList->push_back(&token);
+            this->addToken(TokenType::GREATER, this->currentLine, nullptr);
+        }
+    }
+    else if (currentChar == '"')
+    {
+        bool foundStringEnd = false;
+        while ((this->peek() != '\0') && (this->peek() != '"'))
+        {
+            this->advance();
+        }
+        if (this->peek() != '\0' && this->peek() == '"')
+        {
+            foundStringEnd = true;
+        }
+        if (foundStringEnd)
+        {
+            string currentSubstr = this->getCurrentSubstr();
+            this->addToken(TokenType::STRING, this->currentLine, currentSubstr);
+        }
+        else
+        {
+            string errMssgDesc = "Unterminated String Literal";
+            string errorMssg = this->generateError(&errMssgDesc);
+            this->addError(errorMssg);
+        }
+    }
+    else if (currentChar == '\\')
+    {
+        if (this->match('n'))
+        {
+            this->currentLine++;
+            this->current++;
         }
     }
     else
     {
-        if (isdigit(*currentCharPtr))
+        if (isdigit(currentChar))
         {
             this->addNumber();
         }
-        else if (isalpha(*currentCharPtr))
+        else if (isalpha(currentChar))
         {
             this->addString();
         }
         else
         {
-            cout << "Token: " << *currentCharPtr << " not recognised.";
+            cout << "Token: " << currentChar << " not recognised.";
         }
     }
 }
-
-std::unique_ptr<string> Scanner::getCurrentSubstr() const
+void Scanner::addToken(TokenType type, int line, std::any data)
 {
-    return std::make_unique<string>(this->sourceFile.substr(this->start, this->current - this->start + 1));
+    Token *tokenPtr = new Token(type, this->currentLine, data);
+    this->tokenList->push_back(tokenPtr);
+}
+void Scanner::addError(string errorMessage)
+{
+    string *errorMessagePtr = new string(errorMessage);
+    this->errorList->push_back(errorMessagePtr);
+}
+string Scanner::generateError(string *message) const
+{
+    string messageDesc = "";
+    messageDesc = (message == nullptr) ? "NULL message" : *message;
+    string errorMessage = "Error: line " + std::to_string(this->currentLine) + " -" + messageDesc;
+    return errorMessage;
+}
+
+string Scanner::getCurrentSubstr() const
+{
+    return this->sourceFile.substr(this->start, this->current - this->start + 1);
 }
 void Scanner::addNumber()
 {
-    char *currentChar;
+    char currentChar;
     bool isDouble = false;
-    while (isInRange() && isdigit(*this->peek()))
+    while (isInRange() && isdigit(this->peek()))
     {
         currentChar = this->advance();
     }
-    if (*currentChar == '.')
+    if (currentChar == '.')
     {
         isDouble = true;
         this->advance();
     }
 
-    while (isInRange() && isdigit(*this->peek()))
+    while (isInRange() && isdigit(this->peek()))
     {
         this->advance();
     }
-    string numberSubstr = *this->getCurrentSubstr();
+    string numberSubstr = this->getCurrentSubstr();
     if (isDouble)
     {
         double parsedDouble = std::stod(numberSubstr);
-        Token token(TokenType::NUMBER, this->currentLine, parsedDouble);
-        this->tokenList->push_back(&token);
+        this->addToken(TokenType::NUMBER, this->currentLine, parsedDouble);
     }
     else
     {
         int parsedInt = std::stoi(numberSubstr);
-        Token token(TokenType::NUMBER, this->currentLine, parsedInt);
-        this->tokenList->push_back(&token);
+        this->addToken(TokenType::NUMBER, this->currentLine, parsedInt);
     }
 }
 void Scanner::addString()
 {
-    string tokenWord;
-    while (isInRange() && isalpha(*this->peek()))
+    string tokenWord = "";
+    while (isInRange() && isalpha(this->peek()))
     {
         tokenWord += this->advance();
     }
     TokenType tokenTypeToInsert = this->matchKeyword(tokenWord);
-    string dataToInsert = NULL;
+    string dataToInsert = "";
     if (tokenTypeToInsert == TokenType::IDENTIFIER)
     {
-        dataToInsert = *this->getCurrentSubstr();
+        dataToInsert = this->getCurrentSubstr();
     }
-    Token token(tokenTypeToInsert, this->currentLine, dataToInsert);
-    this->tokenList->push_back(&token);
+    this->addToken(tokenTypeToInsert, this->currentLine, (dataToInsert == "") ? NULL : dataToInsert);
 }
 TokenType Scanner::matchKeyword(string tokenWord)
 {
@@ -322,18 +357,14 @@ bool Scanner::match(char const expected)
     }
 }
 
-// void Scanner::printOutTokens() const
-// {
-//     for (Token *token : *this->tokenList)
-//     {
-//         if (token->getType() == TokenType::NUMBER)
-//         {
-//         }
-//         else if (token->getType() == TokenType::IDENTIFIER)
-//         {
-//         }
-//     }
-// }
+void Scanner::printOutTokens() const
+{
+    for (Token *token : *this->tokenList)
+    {
+        cout << *token << endl;
+    }
+}
+
 std::ostream &operator<<(std::ostream &os, const Scanner &scanner)
 {
     os << "   {"

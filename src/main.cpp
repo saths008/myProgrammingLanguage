@@ -32,7 +32,9 @@ int main(int argc, char *argv[])
 		string fileRead = readFile(argv[1]);
 		std::unique_ptr<string> fileReadPtr = std::make_unique<string>(fileRead);
 		Scanner scanner(*fileReadPtr);
-		cout << "Scanner: " << scanner << endl;
+		cout << "Constructed Scanner: " << scanner << endl;
+		scanner.scanFile();
+		cout << "After scanning Scanner: " << scanner << endl;
 	}
 	return 0;
 }
