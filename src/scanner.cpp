@@ -87,11 +87,11 @@ char Scanner::advance()
 
 void Scanner::scanTokens()
 {
-    int counter = 0;
+    // int counter = 0;
     while (isInRange())
     {
-        cout << "Counter: " << counter++ << endl;
-        cout << "Current: " << this->current << endl;
+        // cout << "Counter: " << counter++ << endl;
+        // cout << "Current: " << this->current << endl;
         this->start = this->current;
         this->scanToken();
     }
@@ -99,7 +99,7 @@ void Scanner::scanTokens()
 
 void Scanner::scanToken()
 {
-    cout << "In scanToken()" << endl;
+    // cout << "In scanToken()" << endl;
     char currentChar = this->advance();
     if (currentChar == '\0')
     {
@@ -259,7 +259,12 @@ string Scanner::generateError(string messageDesc) const
 
 string Scanner::getCurrentSubstr() const
 {
-    return this->sourceFile.substr(this->start, this->current - this->start + 1);
+    return this->getCurrentSubstr(this->start, this->current);
+    // return this->sourceFile.substr(this->start, this->current - this->start + 1);
+}
+string Scanner::getCurrentSubstr(int start, int end) const
+{
+    return this->sourceFile.substr(start, end - start);
 }
 void Scanner::addNumber()
 {
@@ -292,21 +297,22 @@ void Scanner::addNumber()
 }
 void Scanner::addString()
 {
-    string tokenWord = "";
     while (isInRange() && isalpha(this->peek()))
     {
-        tokenWord += this->advance();
+        this->advance();
     }
-    TokenType tokenTypeToInsert = this->matchKeyword(tokenWord);
+    string currentSubstr = this->getCurrentSubstr();
+    TokenType tokenTypeToInsert = this->matchKeyword(currentSubstr);
     string dataToInsert = "";
     if (tokenTypeToInsert == TokenType::IDENTIFIER)
     {
-        dataToInsert.append(this->getCurrentSubstr());
+        dataToInsert.append(currentSubstr);
     }
-    this->addToken(tokenTypeToInsert, this->currentLine, (dataToInsert == "") ? NULL : dataToInsert);
+    this->addToken(tokenTypeToInsert, this->currentLine, (dataToInsert.empty()) ? std::string("") : dataToInsert);
 }
 TokenType Scanner::matchKeyword(string tokenWord)
 {
+    // cout << "tokenWord: " << tokenWord << endl;
     TokenType typeToInsert;
     try
     {
@@ -314,7 +320,7 @@ TokenType Scanner::matchKeyword(string tokenWord)
     }
     catch (const std::out_of_range &e)
     {
-        std::cerr << "Key not found: " << e.what() << std::endl;
+        std::cerr << "Key not found for " << tokenWord << "error: " << e.what() << std::endl;
         typeToInsert = TokenType::IDENTIFIER;
     }
     return typeToInsert;

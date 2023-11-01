@@ -21,14 +21,8 @@ int Token::getLine() const
     return this->line;
 }
 
-const std::type_info &Token::getDataType() const
-{
-    return typeid(this->data);
-}
-
 const std::string Token::stringifyNumberData() const
 {
-    const std::type_info &typeInfo = this->getDataType();
     std::unique_ptr<int> dataFromTokenPtr = this->getData<int>(); // Attempt to get data as int
     if (dataFromTokenPtr != nullptr)                              // If data is int
     {

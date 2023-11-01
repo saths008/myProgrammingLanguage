@@ -6,7 +6,11 @@
 #include <any>
 #include "scanner.hpp"
 using std::cout, std::endl, std::string;
-
+void run(string program)
+{
+	Scanner scanner(program);
+	scanner.scanFile();
+}
 string readFile(string filePath)
 {
 	std::ifstream MyReadFile(filePath);
@@ -30,11 +34,24 @@ int main(int argc, char *argv[])
 	if (argc > 1 && std::filesystem::exists(argv[1]))
 	{
 		string fileRead = readFile(argv[1]);
-		std::unique_ptr<string> fileReadPtr = std::make_unique<string>(fileRead);
-		Scanner scanner(*fileReadPtr);
-		cout << "Constructed Scanner: " << scanner << endl;
-		scanner.scanFile();
-		cout << "After scanning Scanner: " << scanner << endl;
+		run(fileRead);
+	}
+	else if (argc == 1)
+	{
+		std::string line;
+		std::cout << "Welcome to the REPL! \n";
+		while (true)
+		{
+			std::cout << "> ";
+			std::getline(std::cin, line);
+
+			if (line.empty())
+			{
+				break;
+			}
+			std::cout << "You entered: " << line << std::endl;
+			run(line);
+		}
 	}
 	return 0;
 }

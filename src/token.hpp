@@ -24,7 +24,6 @@ public:
     std::string *stringifyToken() const;
 
     std::string to_string() const;
-    const std::type_info &getDataType() const;
     const std::string stringifyNumberData() const;
 };
 std::ostream &operator<<(std::ostream &s, Token const &token);

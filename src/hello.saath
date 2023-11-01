@@ -1,3 +1,3 @@
-1+22.123123
-"Hello World"
-fun asdasd
+fun asdad(){};
+"hello world"
+if (true!=false){return "I'm not sure";}
