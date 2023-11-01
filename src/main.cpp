@@ -14,7 +14,7 @@ string readFile(string filePath)
 	std::string line;
 	while (std::getline(MyReadFile, line))
 	{
-		wholeFile = wholeFile + line + "\\n";
+		wholeFile = wholeFile + line + "\n";
 	}
 	return wholeFile;
 }

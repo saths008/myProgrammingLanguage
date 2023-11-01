@@ -36,7 +36,7 @@ public:
     std::string getCurrentSubstr() const;
     void scanToken();
     void printOutTokens() const;
-    std::string generateError(std::string *message) const;
+    std::string generateError(std::string message) const;
     /*
     Checks if the current index is in
     range of the source file

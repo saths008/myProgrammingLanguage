@@ -4,6 +4,7 @@
 #include <any>
 #include <memory>
 #include <typeinfo>
+using std::cout, std::endl, std::string;
 Token::Token(TokenType type, int line, std::any data)
 {
     this->data = data;
@@ -28,21 +29,41 @@ const std::type_info &Token::getDataType() const
 const std::string Token::stringifyNumberData() const
 {
     const std::type_info &typeInfo = this->getDataType();
-    std::any dataField = this->data;
-    if (typeInfo == typeid(int))
+    std::unique_ptr<int> dataFromTokenPtr = this->getData<int>(); // Attempt to get data as int
+    if (dataFromTokenPtr != nullptr)                              // If data is int
     {
-        std::unique_ptr<int> dataPtr = this->getData<int>();
-        return (dataPtr == nullptr) ? "No Numeric Data" : std::to_string(*dataPtr);
+        return std::to_string(*dataFromTokenPtr);
     }
-    else if (typeInfo == typeid(double))
+    else // Attempt to get data as double
     {
-        std::unique_ptr<double> dataPtr = this->getData<double>();
-        return (dataPtr == nullptr) ? "No Numeric Data" : std::to_string(*dataPtr);
+        std::unique_ptr<double> dataFromTokenPtr = this->getData<double>();
+        return (dataFromTokenPtr == nullptr) ? "Unknown Data Type" : std::to_string(*dataFromTokenPtr);
     }
-    else
-    {
-        return "Stored type unknown.";
-    }
+    // cout << "typeInfo: " << typeInfo.name() << endl;
+    // std::any dataField = this->data;
+    // if (typeInfo == typeid(int))
+    // {
+    //     std::unique_ptr<int> dataPtr = this->getData<int>();
+    //     if (dataPtr == nullptr)
+    //     {
+    //         cout << "No Numeric Data parsing int" << endl;
+    //         return "No Numeric Data";
+    //     }
+    //     else
+    //     {
+    //         cout << "to_string DataPtr: " << std::to_string(*dataPtr) << endl;
+    //         return std::to_string(*dataPtr);
+    //     }
+    // }
+    // else if (typeInfo == typeid(double))
+    // {
+    //     std::unique_ptr<double> dataPtr = this->getData<double>();
+    //     return (dataPtr == nullptr) ? "No Numeric Data" : std::to_string(*dataPtr);
+    // }
+    // else
+    // {
+    //     return "Stored type unknown.";
+    // }
 }
 template <typename T>
 std::unique_ptr<T> Token::getData() const
@@ -147,7 +168,7 @@ std::string Token::to_string() const
     break;
     case NUMBER:
     {
-        std::string stringifyTokenData = this->stringifyNumberData();
+        stringifyTokenData = this->stringifyNumberData();
         stringifyTokenType = "NUMBER";
     }
     break;
@@ -204,7 +225,7 @@ std::string Token::to_string() const
         break;
     }
 
-    return stringifyTokenType + " \n" + stringifyTokenData + "\n" + "Line: " + std::to_string(this->getLine()) + "\n";
+    return "\n{\ntype: TokenType::" + stringifyTokenType + "\n" + "tokenData: " + stringifyTokenData + "\n" + "line: " + std::to_string(this->getLine()) + "\n}";
 }
 std::ostream &operator<<(std::ostream &os, const Token &token)
 {

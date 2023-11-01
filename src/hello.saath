@@ -1,2 +1,3 @@
-Hello world
-new line
+1+2
+"Hello World"
+fun makeInt(){};

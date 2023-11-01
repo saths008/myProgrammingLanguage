@@ -17,8 +17,9 @@ Scanner::Scanner(string sourceFile)
     this->tokenList = std::make_unique<vector<Token *>>();
     this->start = 0;
     this->current = 0;
-    this->currentLine = 0;
+    this->currentLine = 1;
     this->lenOfFile = this->sourceFile.length();
+    initialiseKeywordMap();
 }
 std::string Scanner::getSourceFile() const
 {
@@ -202,23 +203,24 @@ void Scanner::scanToken()
         }
         if (foundStringEnd)
         {
+            this->advance(); // Advance past the closing quote.
             string currentSubstr = this->getCurrentSubstr();
             this->addToken(TokenType::STRING, this->currentLine, currentSubstr);
         }
         else
         {
             string errMssgDesc = "Unterminated String Literal";
-            string errorMssg = this->generateError(&errMssgDesc);
+            string errorMssg = this->generateError(errMssgDesc);
             this->addError(errorMssg);
         }
     }
-    else if (currentChar == '\\')
+    else if (currentChar == '\n')
     {
-        if (this->match('n'))
-        {
-            this->currentLine++;
-            this->current++;
-        }
+
+        this->currentLine++;
+    }
+    else if (currentChar == ' ')
+    {
     }
     else
     {
@@ -246,10 +248,8 @@ void Scanner::addError(string errorMessage)
     string *errorMessagePtr = new string(errorMessage);
     this->errorList->push_back(errorMessagePtr);
 }
-string Scanner::generateError(string *message) const
+string Scanner::generateError(string messageDesc) const
 {
-    string messageDesc = "";
-    messageDesc = (message == nullptr) ? "NULL message" : *message;
     string errorMessage = "Error: line " + std::to_string(this->currentLine) + " -" + messageDesc;
     return errorMessage;
 }
