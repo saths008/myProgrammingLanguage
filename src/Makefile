@@ -1,4 +1,4 @@
-CXX = g++
+CXX ?= c++
 CXXFLAGS = -std=c++17 -Wall
 LDFLAGS =
 

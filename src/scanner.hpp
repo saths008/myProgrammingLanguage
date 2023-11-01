@@ -36,6 +36,7 @@ public:
     std::string getCurrentSubstr() const;
     void scanToken();
     void printOutTokens() const;
+    void printOutErrors() const;
     std::string generateError(std::string message) const;
     /*
     Checks if the current index is in

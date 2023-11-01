@@ -15,6 +15,7 @@ Scanner::Scanner(string sourceFile)
     this->sourceFile = sourceFile;
     this->hadError = false;
     this->tokenList = std::make_unique<vector<Token *>>();
+    this->errorList = std::make_unique<vector<string *>>();
     this->start = 0;
     this->current = 0;
     this->currentLine = 1;
@@ -29,6 +30,7 @@ void Scanner::scanFile()
 {
     this->scanTokens();
     this->printOutTokens();
+    this->printOutErrors();
 }
 bool Scanner::getHadError() const
 {
@@ -245,6 +247,7 @@ void Scanner::addToken(TokenType type, int line, std::any data)
 }
 void Scanner::addError(string errorMessage)
 {
+    this->hadError = true;
     string *errorMessagePtr = new string(errorMessage);
     this->errorList->push_back(errorMessagePtr);
 }
@@ -362,6 +365,14 @@ void Scanner::printOutTokens() const
     for (Token *token : *this->tokenList)
     {
         cout << *token << endl;
+    }
+}
+
+void Scanner::printOutErrors() const
+{
+    for (string *errorMessagePtr : *this->errorList)
+    {
+        cout << *errorMessagePtr << endl;
     }
 }
 
