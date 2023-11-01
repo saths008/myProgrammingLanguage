@@ -14,8 +14,8 @@ Scanner::Scanner(string sourceFile)
 {
     this->sourceFile = sourceFile;
     this->hadError = false;
-    this->tokenList = std::make_unique<vector<Token *>>();
-    this->errorList = std::make_unique<vector<string *>>();
+    this->tokenList = std::make_unique<vector<std::unique_ptr<Token>>>();
+    this->errorList = std::make_unique<vector<string>>();
     this->start = 0;
     this->current = 0;
     this->currentLine = 1;
@@ -242,14 +242,14 @@ void Scanner::scanToken()
 }
 void Scanner::addToken(TokenType type, int line, std::any data)
 {
-    Token *tokenPtr = new Token(type, this->currentLine, data);
-    this->tokenList->push_back(tokenPtr);
+
+    Token token(type, this->currentLine, data);
+    this->tokenList->push_back(std::make_unique<Token>(token));
 }
 void Scanner::addError(string errorMessage)
 {
     this->hadError = true;
-    string *errorMessagePtr = new string(errorMessage);
-    this->errorList->push_back(errorMessagePtr);
+    this->errorList->push_back(errorMessage);
 }
 string Scanner::generateError(string messageDesc) const
 {
@@ -263,13 +263,12 @@ string Scanner::getCurrentSubstr() const
 }
 void Scanner::addNumber()
 {
-    char currentChar;
     bool isDouble = false;
     while (isInRange() && isdigit(this->peek()))
     {
-        currentChar = this->advance();
+        this->advance();
     }
-    if (currentChar == '.')
+    if (this->peek() == '.')
     {
         isDouble = true;
         this->advance();
@@ -302,7 +301,7 @@ void Scanner::addString()
     string dataToInsert = "";
     if (tokenTypeToInsert == TokenType::IDENTIFIER)
     {
-        dataToInsert = this->getCurrentSubstr();
+        dataToInsert.append(this->getCurrentSubstr());
     }
     this->addToken(tokenTypeToInsert, this->currentLine, (dataToInsert == "") ? NULL : dataToInsert);
 }
@@ -362,17 +361,17 @@ bool Scanner::match(char const expected)
 
 void Scanner::printOutTokens() const
 {
-    for (Token *token : *this->tokenList)
+    for (const std::unique_ptr<Token> &tokenPtr : *this->tokenList)
     {
-        cout << *token << endl;
+        cout << *tokenPtr << endl;
     }
 }
 
 void Scanner::printOutErrors() const
 {
-    for (string *errorMessagePtr : *this->errorList)
+    for (const string &errorMessage : *this->errorList)
     {
-        cout << *errorMessagePtr << endl;
+        cout << errorMessage << endl;
     }
 }
 

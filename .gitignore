@@ -1,4 +1,6 @@
 main
+scanner
+token
 ./src/main
 ./src/scanner
 ./src/valgrind.rpt

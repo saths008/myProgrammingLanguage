@@ -13,9 +13,9 @@ class Scanner
 private:
     std::string sourceFile;
     bool hadError;
-    std::unique_ptr<std::vector<Token *>> tokenList;
+    std::unique_ptr<std::vector<std::unique_ptr<Token>>> tokenList;
     // List of all errors
-    std::unique_ptr<std::vector<std::string *>> errorList;
+    std::unique_ptr<std::vector<std::string>> errorList;
     std::unique_ptr<std::unordered_map<std::string, TokenType>> keywordMap;
     int start;
     int current;
