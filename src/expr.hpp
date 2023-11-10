@@ -13,7 +13,7 @@ class PrintVisitor;
 class Expr {
 public:
   virtual ~Expr() {}
-  virtual void accept(std::unique_ptr<ExprVisitor> visitor) = 0;
+  virtual void accept(std::shared_ptr<ExprVisitor> visitor) const = 0;
 };
 
 class Binary : public Expr {
@@ -25,7 +25,10 @@ private:
 public:
   Binary(std::shared_ptr<const Expr> left, std::shared_ptr<const Expr> right,
          std::shared_ptr<const Token> op);
-  void accept(std::unique_ptr<ExprVisitor> visitor) override;
+  void accept(std::shared_ptr<ExprVisitor> visitor) const override;
+  std::shared_ptr<const Expr> getLeft() const;
+  std::shared_ptr<const Expr> getRight() const;
+  std::shared_ptr<const Token> getOp() const;
 };
 class Grouping : public Expr {
 private:
@@ -33,7 +36,8 @@ private:
 
 public:
   Grouping(std::shared_ptr<const Expr> expr);
-  void accept(std::unique_ptr<ExprVisitor> visitor) override;
+  void accept(std::shared_ptr<ExprVisitor> visitor) const override;
+  std::shared_ptr<const Expr> getExpr() const;
 };
 class Unary : public Expr {
 private:
@@ -42,33 +46,38 @@ private:
 
 public:
   Unary(std::shared_ptr<const Expr> expr, std::shared_ptr<const Token> token);
-  void accept(std::unique_ptr<ExprVisitor> visitor) override;
+  void accept(std::shared_ptr<ExprVisitor> visitor) const override;
+  std::shared_ptr<const Expr> getExpr() const;
+  std::shared_ptr<const Token> getToken() const;
 };
 class Literal : public Expr {
 private:
-  const std::variant<double, int, std::string> value;
+  const std::string value; // use stringifyNumberData() to get the value
 
 public:
-  Literal(std::variant<double, int, std::string> value);
-  void accept(std::unique_ptr<ExprVisitor> visitor) override;
+  Literal(std::string value);
+  void accept(std::shared_ptr<ExprVisitor> visitor) const override;
+  std::string getValue() const;
 };
 
 class ExprVisitor {
 public:
-  virtual void visit(Grouping &grouping) = 0;
-  virtual void visit(Unary &unary) = 0;
-  virtual void visit(Binary &binary) = 0;
-  virtual void visit(Literal &literal) = 0;
+  virtual void visit(const Grouping &grouping) const = 0;
+  virtual void visit(const Unary &unary) const = 0;
+  virtual void visit(const Binary &binary) const = 0;
+  virtual void visit(const Literal &literal) const = 0;
   virtual ~ExprVisitor() = default;
 };
 class PrintVisitor : public ExprVisitor {
 
 public:
-  void visit(Grouping &grouping) override;
-  void visit(Unary &unary) override;
-  void visit(Binary &binary) override;
-  void visit(Literal &literal) override;
+  void visit(const Grouping &grouping) const override;
+  void visit(const Unary &unary) const override;
+  void visit(const Binary &binary) const override;
+  void visit(const Literal &literal) const override;
   virtual ~PrintVisitor() = default;
 };
+void paranthesize(const std::string &name,
+                  std::vector<std::shared_ptr<const Expr>> &exprs);
 
 #endif

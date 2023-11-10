@@ -61,9 +61,9 @@ template <typename T> std::unique_ptr<T> Token::getData() const {
     return nullptr;
   }
 }
-std::string Token::to_string() const {
+std::string Token::stringifyTokenType() const {
   std::string stringifyTokenType = "";
-  std::string stringifyTokenData = "";
+  // std::string stringifyTokenData = "";
   switch (this->getType()) {
   case LEFT_PAREN:
     stringifyTokenType = "LEFT_PAREN";
@@ -135,20 +135,20 @@ std::string Token::to_string() const {
   case IDENTIFIER: {
     std::unique_ptr<std::string> dataFromTokenPtr =
         this->getData<std::string>();
-    stringifyTokenData =
-        (dataFromTokenPtr == nullptr) ? "No Data" : *dataFromTokenPtr;
+    // stringifyTokenData =
+    //     (dataFromTokenPtr == nullptr) ? "No Data" : *dataFromTokenPtr;
     stringifyTokenType = "IDENTIFIER";
   } break;
   case STRING: {
 
-    std::unique_ptr<std::string> dataFromTokenPtr =
-        this->getData<std::string>();
-    stringifyTokenData =
-        (dataFromTokenPtr == nullptr) ? "No Data" : *dataFromTokenPtr;
+    // std::unique_ptr<std::string> dataFromTokenPtr =
+    //     this->getData<std::string>();
+    // stringifyTokenData =
+    //     (dataFromTokenPtr == nullptr) ? "No Data" : *dataFromTokenPtr;
     stringifyTokenType = "STRING";
   } break;
   case NUMBER: {
-    stringifyTokenData = this->stringifyNumberData();
+    // stringifyTokenData = this->stringifyNumberData();
     stringifyTokenType = "NUMBER";
   } break;
   case AND:
@@ -203,7 +203,35 @@ std::string Token::to_string() const {
     stringifyTokenType = "ENDOFFILE";
     break;
   }
+  return stringifyTokenType;
+}
+std::string Token::stringifyTokenData() const {
+  std::string stringifyTokenData = "";
+  switch (this->getType()) {
+  case IDENTIFIER: {
+    std::unique_ptr<std::string> dataFromTokenPtr =
+        this->getData<std::string>();
+    stringifyTokenData.append(
+        (dataFromTokenPtr == nullptr) ? "No Data" : *dataFromTokenPtr);
+  } break;
+  case STRING: {
 
+    std::unique_ptr<std::string> dataFromTokenPtr =
+        this->getData<std::string>();
+    stringifyTokenData.append(
+        (dataFromTokenPtr == nullptr) ? "No Data" : *dataFromTokenPtr);
+  } break;
+  case NUMBER: {
+    stringifyTokenData.append(this->stringifyNumberData());
+  } break;
+  default:
+    break;
+  }
+  return stringifyTokenData;
+}
+std::string Token::to_string() const {
+  std::string stringifyTokenType = this->stringifyTokenType();
+  std::string stringifyTokenData = this->stringifyTokenData();
   return "\n{\ntype: TokenType::" + stringifyTokenType + "\n" +
          "tokenData: " + stringifyTokenData + "\n" +
          "line: " + std::to_string(this->getLine()) + "\n}";

@@ -1,15 +1,15 @@
-==20617== Memcheck, a memory error detector
-==20617== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==20617== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
-==20617== Command: ./main hello.saath
-==20617== Parent PID: 20616
-==20617== 
-==20617== 
-==20617== HEAP SUMMARY:
-==20617==     in use at exit: 0 bytes in 0 blocks
-==20617==   total heap usage: 7 allocs, 7 frees, 73,960 bytes allocated
-==20617== 
-==20617== All heap blocks were freed -- no leaks are possible
-==20617== 
-==20617== For lists of detected and suppressed errors, rerun with: -s
-==20617== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==32209== Memcheck, a memory error detector
+==32209== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==32209== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==32209== Command: ./main asd
+==32209== Parent PID: 32208
+==32209== 
+==32209== 
+==32209== HEAP SUMMARY:
+==32209==     in use at exit: 0 bytes in 0 blocks
+==32209==   total heap usage: 20 allocs, 20 frees, 74,304 bytes allocated
+==32209== 
+==32209== All heap blocks were freed -- no leaks are possible
+==32209== 
+==32209== For lists of detected and suppressed errors, rerun with: -s
+==32209== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

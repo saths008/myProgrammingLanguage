@@ -45,11 +45,15 @@ int main(int argc, char *argv[]) {
   //     run(line);
   //   }
   // }
-  std::any data = "+";
-  std::variant<double, int, std::string> literal = 2.0;
-  std::unique_ptr<Binary> binaryPtr = std::make_unique<Binary>(
-      std::make_shared<Literal>(literal), std::make_shared<Literal>(literal),
-      std::make_shared<Token>(TokenType::PLUS, 12, data));
+  std::any data = 1;
+  auto unaryToken = std::make_shared<Token>(TokenType::MINUS, 2, "");
+  auto unaryLiteral = std::make_shared<Literal>("123");
+  auto starOp = std::make_shared<Token>(TokenType::STAR, 2, "");
+  auto groupingBinary =
+      std::make_shared<Grouping>(std::make_shared<Literal>("45.67"));
+  auto unaryPtr = std::make_shared<Unary>(unaryLiteral, unaryToken);
+  std::unique_ptr<Expr> binaryPtr =
+      std::make_unique<Binary>(unaryPtr, groupingBinary, starOp);
   std::unique_ptr<PrintVisitor> printVisitor = std::make_unique<PrintVisitor>();
   binaryPtr->accept(std::move(printVisitor));
   return 0;
