@@ -15,15 +15,15 @@ private:
 public:
   Parser(std::shared_ptr<std::vector<std::unique_ptr<Token>>> const tokenList);
   /*
-   * Returns the Expr object that represents the expression.
+   * Returns the std::unique_ptr<Expr> object that represents the expression.
    */
-  Expr expression();
-  Expr equality();
-  Expr comparison();
-  Expr term();
-  Expr factor();
-  Expr unary();
-  Expr primary();
+  std::shared_ptr<Expr> expression();
+  std::shared_ptr<Expr> equality();
+  std::shared_ptr<Expr> comparison();
+  std::shared_ptr<Expr> term();
+  std::shared_ptr<Expr> factor();
+  std::shared_ptr<Expr> unary();
+  std::shared_ptr<Expr> primary();
 
   // Helper Functions
   /*

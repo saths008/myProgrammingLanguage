@@ -26,32 +26,6 @@ const std::string Token::stringifyNumberData() const {
     return (dataFromTokenPtr == nullptr) ? "Unknown Data Type"
                                          : std::to_string(*dataFromTokenPtr);
   }
-  // cout << "typeInfo: " << typeInfo.name() << endl;
-  // std::any dataField = this->data;
-  // if (typeInfo == typeid(int))
-  // {
-  //     std::unique_ptr<int> dataPtr = this->getData<int>();
-  //     if (dataPtr == nullptr)
-  //     {
-  //         cout << "No Numeric Data parsing int" << endl;
-  //         return "No Numeric Data";
-  //     }
-  //     else
-  //     {
-  //         cout << "to_string DataPtr: " << std::to_string(*dataPtr) << endl;
-  //         return std::to_string(*dataPtr);
-  //     }
-  // }
-  // else if (typeInfo == typeid(double))
-  // {
-  //     std::unique_ptr<double> dataPtr = this->getData<double>();
-  //     return (dataPtr == nullptr) ? "No Numeric Data" :
-  //     std::to_string(*dataPtr);
-  // }
-  // else
-  // {
-  //     return "Stored type unknown.";
-  // }
 }
 template <typename T> std::unique_ptr<T> Token::getData() const {
   try {
@@ -135,16 +109,10 @@ std::string Token::stringifyTokenType() const {
   case IDENTIFIER: {
     std::unique_ptr<std::string> dataFromTokenPtr =
         this->getData<std::string>();
-    // stringifyTokenData =
-    //     (dataFromTokenPtr == nullptr) ? "No Data" : *dataFromTokenPtr;
     stringifyTokenType = "IDENTIFIER";
   } break;
   case STRING: {
 
-    // std::unique_ptr<std::string> dataFromTokenPtr =
-    //     this->getData<std::string>();
-    // stringifyTokenData =
-    //     (dataFromTokenPtr == nullptr) ? "No Data" : *dataFromTokenPtr;
     stringifyTokenType = "STRING";
   } break;
   case NUMBER: {
