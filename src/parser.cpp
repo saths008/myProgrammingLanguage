@@ -1,16 +1,25 @@
 #include "parser.hpp"
 #include "expr.hpp"
+#include "scanner.hpp"
 #include "token.hpp"
 #include "tokentype.hpp"
+#include <iostream>
 #include <memory>
 #include <optional>
 #include <vector>
-
-using std::vector, std::shared_ptr, std::unique_ptr, std::optional, std::string;
+using std::vector, std::shared_ptr, std::unique_ptr, std::optional, std::string,
+    std::cout, std::endl;
 Parser::Parser(shared_ptr<vector<unique_ptr<Token>>> const paramTokenList)
     : tokenList(paramTokenList), current(0),
-      lenOfTokenList(paramTokenList->size()) {}
+      lenOfTokenList(paramTokenList->size()), hasError(false) {}
 
+shared_ptr<Expr> Parser::parse() {
+  try {
+    return this->expression();
+  } catch (ParseError error) {
+    return nullptr;
+  }
+};
 shared_ptr<Expr> Parser::expression() { return this->equality(); };
 
 shared_ptr<Expr> Parser::equality() {
@@ -70,7 +79,7 @@ shared_ptr<Expr> Parser::unary() {
     shared_ptr<Token> operatorTokenPtr =
         optToken ? std::make_shared<Token>(optToken.value()) : nullptr;
     shared_ptr<Expr> right = this->unary();
-    return std::make_shared<Unary>(operatorTokenPtr, right);
+    return std::make_shared<Unary>(right, operatorTokenPtr);
   };
   return this->primary();
 };
@@ -84,7 +93,7 @@ shared_ptr<Expr> Parser::primary() {
   }
   (*givenTokenTypePtr)[0] = TokenType::TRUE;
   if (this->match(givenTokenTypePtr)) {
-    return std::make_shared<Literal>(true);
+    return std::make_shared<Literal>("true");
   }
   (*givenTokenTypePtr)[0] = TokenType::NIL;
   if (this->match(givenTokenTypePtr)) {
@@ -106,6 +115,7 @@ shared_ptr<Expr> Parser::primary() {
         vector<TokenType>{TokenType::RIGHT_PAREN}));
     return std::make_shared<Grouping>(expr);
   }
+  throw this->error(this->peek().value(), "Expect expression.");
 };
 bool Parser::check(TokenType const tokenType) {
   optional<Token> optToken = this->peek();
@@ -138,7 +148,21 @@ optional<Token> Parser::advance() {
   this->current++;
   return currentToken;
 }
+ParseError Parser::error(Token const token, std::string const message) {
+  this->hasError = true;
+  cout << "Error: "
+       << "Line " << token.getLine() << message << endl;
+  return ParseError(message);
+}
+Token Parser::consume(TokenType const tokenType,
+                      std::string const errorMessage) {
+  if (this->check(tokenType)) {
+    return this->advance().value();
+  }
+  throw this->error(this->peek().value(), errorMessage);
+}
 bool Parser::isAtEnd() const { return this->current >= this->lenOfTokenList; }
 bool Parser::isInRange(int const index) const {
   return (index >= 0 && index < this->lenOfTokenList);
 }
+bool Parser::getHasError() const { return this->hasError; }

@@ -22,10 +22,11 @@ Scanner::Scanner(string sourceFile) {
   initialiseKeywordMap();
 }
 std::string Scanner::getSourceFile() const { return sourceFile; }
-void Scanner::scanFile() {
+std::shared_ptr<vector<std::unique_ptr<Token>>> Scanner::scanFile() {
   this->scanTokens();
   this->printOutTokens();
   this->printOutErrors();
+  return this->tokenList;
 }
 bool Scanner::getHadError() const { return hadError; }
 
@@ -164,9 +165,11 @@ void Scanner::addError(string errorMessage) {
   this->hadError = true;
   this->errorList->push_back(errorMessage);
 }
+
 string Scanner::generateError(string messageDesc) const {
   string errorMessage =
       "Error: line " + std::to_string(this->currentLine) + " -" + messageDesc;
+  cout << errorMessage << endl;
   return errorMessage;
 }
 
@@ -214,7 +217,6 @@ void Scanner::addString() {
                  (dataToInsert.empty()) ? std::string("") : dataToInsert);
 }
 TokenType Scanner::matchKeyword(string tokenWord) {
-  // cout << "tokenWord: " << tokenWord << endl;
   TokenType typeToInsert;
   try {
     typeToInsert = this->keywordMap->at(tokenWord);

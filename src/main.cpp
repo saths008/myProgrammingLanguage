@@ -1,4 +1,5 @@
 #include "expr.hpp"
+#include "parser.hpp"
 #include "scanner.hpp"
 #include <any>
 #include <filesystem>
@@ -7,10 +8,28 @@
 #include <memory>
 #include <string>
 #include <variant>
-using std::cout, std::endl, std::string;
+#include <vector>
+using std::cout, std::endl, std::string, std::vector, std::shared_ptr,
+    std::unique_ptr;
 void run(string program) {
   Scanner scanner(program);
-  scanner.scanFile();
+  shared_ptr<vector<unique_ptr<Token>>> listOfTokens = scanner.scanFile();
+  cout << "Scanning done" << endl;
+  unique_ptr<Parser> parserPtr = std::make_unique<Parser>(listOfTokens);
+  shared_ptr<Expr> exprPtr = parserPtr->parse();
+  cout << "Parsing done" << endl;
+  if (scanner.getHadError()) {
+    cout << "Scanner had error" << endl;
+    return;
+  }
+  if (parserPtr->getHasError()) {
+    cout << "Parser had error" << endl;
+    return;
+  }
+  std::unique_ptr<PrintVisitor> printVisitor = std::make_unique<PrintVisitor>();
+  cout << "Printing starting" << endl;
+  exprPtr->accept(std::move(printVisitor));
+  cout << "Printing done" << endl;
 }
 string readFile(string filePath) {
   std::ifstream MyReadFile(filePath);

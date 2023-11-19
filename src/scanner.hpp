@@ -38,6 +38,10 @@ public:
   void scanToken();
   void printOutTokens() const;
   void printOutErrors() const;
+  /*
+   * Returns a string containing the error. Also prints out the error to
+   * console.
+   */
   std::string generateError(std::string message) const;
   /*
   Checks if the current index is in
@@ -82,7 +86,7 @@ public:
   void addError(std::string errorMessage);
   // Scans all the tokens, then prints them out. Then, prints out the list of
   // errors.
-  void scanFile();
+  std::shared_ptr<std::vector<std::unique_ptr<Token>>> scanFile();
 };
 
 std::ostream &operator<<(std::ostream &s, Scanner const &scanner);

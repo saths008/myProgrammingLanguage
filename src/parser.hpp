@@ -5,15 +5,31 @@
 #include "tokentype.hpp"
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <vector>
+class ParseError : public std::runtime_error {
+public:
+  ParseError(const std::string &message) : std::runtime_error(message) {}
+};
 class Parser {
 private:
   std::shared_ptr<std::vector<std::unique_ptr<Token>>> tokenList;
   int current;
   int lenOfTokenList;
+  bool hasError;
 
 public:
   Parser(std::shared_ptr<std::vector<std::unique_ptr<Token>>> const tokenList);
+  bool getHasError() const;
+  /**
+   * Parses the list of Tokens and returns an expression.
+   */
+  std::shared_ptr<Expr> parse();
+  /**
+   * Prints out the error to the console and returns a ParseError
+   */
+  ParseError error(Token const token, std::string const message);
+
   /*
    * Returns the std::unique_ptr<Expr> object that represents the expression.
    */
@@ -45,11 +61,13 @@ public:
    * Increments the current index.
    */
   std::optional<Token> advance();
-
   /*
-  Returns the Token at the previous index.
-  Returns std::nullopt if the current index is out of range.
-  */
+   * Matches the given token type else throws an error
+   */
+  Token consume(TokenType const tokenType, std::string const errorMessage);
+  /*  Returns the Token at the previous index.
+    Returns std::nullopt if the current index is out of range.
+    */
   std::optional<Token> previous();
   /*
    * Returns whether the current inex is in range of the tokenList.
