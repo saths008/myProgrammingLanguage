@@ -15,13 +15,13 @@ void run(string program) {
   Scanner scanner(program);
   shared_ptr<vector<unique_ptr<Token>>> listOfTokens = scanner.scanFile();
   cout << "Scanning done" << endl;
-  unique_ptr<Parser> parserPtr = std::make_unique<Parser>(listOfTokens);
-  shared_ptr<Expr> exprPtr = parserPtr->parse();
-  cout << "Parsing done" << endl;
   if (scanner.getHadError()) {
     cout << "Scanner had error" << endl;
     return;
   }
+  unique_ptr<Parser> parserPtr = std::make_unique<Parser>(listOfTokens);
+  shared_ptr<Expr> exprPtr = parserPtr->parse();
+  cout << "Parsing done" << endl;
   if (parserPtr->getHasError()) {
     cout << "Parser had error" << endl;
     return;
