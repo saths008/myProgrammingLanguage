@@ -1,6 +1,5 @@
 #include "parser.hpp"
 #include "expr.hpp"
-#include "scanner.hpp"
 #include "token.hpp"
 #include "tokentype.hpp"
 #include <iostream>
@@ -84,7 +83,7 @@ shared_ptr<Expr> Parser::unary() {
   return this->primary();
 };
 shared_ptr<Expr> Parser::primary() {
-
+  // TRUE?
   vector<TokenType> givenTokenTypes = {TokenType::FALSE};
   shared_ptr<vector<TokenType>> givenTokenTypePtr =
       std::make_shared<vector<TokenType>>(givenTokenTypes);
@@ -115,7 +114,12 @@ shared_ptr<Expr> Parser::primary() {
         vector<TokenType>{TokenType::RIGHT_PAREN}));
     return std::make_shared<Grouping>(expr);
   }
-  throw this->error(this->peek().value(), "Expect expression.");
+  if (this->peek().has_value()) {
+    throw this->error(this->peek().value(), "Expect expression!");
+  } else {
+    throw this->error(Token(TokenType::ENDOFFILE, -1, nullptr),
+                      "Expect expression!");
+  }
 };
 bool Parser::check(TokenType const tokenType) {
   optional<Token> optToken = this->peek();
@@ -159,7 +163,11 @@ Token Parser::consume(TokenType const tokenType,
   if (this->check(tokenType)) {
     return this->advance().value();
   }
-  throw this->error(this->peek().value(), errorMessage);
+  if (this->peek().has_value()) {
+    throw this->error(this->peek().value(), errorMessage);
+  } else {
+    throw this->error(Token(TokenType::ENDOFFILE, -1, nullptr), errorMessage);
+  }
 }
 bool Parser::isAtEnd() const { return this->current >= this->lenOfTokenList; }
 bool Parser::isInRange(int const index) const {
