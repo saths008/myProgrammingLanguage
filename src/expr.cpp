@@ -12,13 +12,13 @@ Binary::Binary(shared_ptr<const Expr> leftParam,
 shared_ptr<const Token> Binary::getOp() const { return this->op; };
 shared_ptr<const Expr> Binary::getLeft() const { return this->left; }
 shared_ptr<const Expr> Binary::getRight() const { return this->right; }
-void Binary::accept(const shared_ptr<ExprVisitor> visitor) const {
+void Binary::accept(const shared_ptr<ExprVisitor<void>> visitor) const {
   visitor->visit(*this);
 };
 // Grouping class
 Grouping::Grouping(shared_ptr<const Expr> exprParam) : expr(exprParam) {}
 shared_ptr<const Expr> Grouping::getExpr() const { return this->expr; }
-void Grouping::accept(const shared_ptr<ExprVisitor> visitor) const {
+void Grouping::accept(const shared_ptr<ExprVisitor<void>> visitor) const {
   visitor->visit(*this);
 };
 // Unary class
@@ -26,14 +26,14 @@ Unary::Unary(shared_ptr<const Expr> exprParam,
              shared_ptr<const Token> tokenParam)
     : expr(exprParam), token(tokenParam){};
 shared_ptr<const Expr> Unary::getExpr() const { return this->expr; }
-void Unary::accept(const shared_ptr<ExprVisitor> visitor) const {
+void Unary::accept(const shared_ptr<ExprVisitor<void>> visitor) const {
   visitor->visit(*this);
 };
 shared_ptr<const Token> Unary::getToken() const { return this->token; };
 // Literal class
 Literal::Literal(string valueParam) : value(valueParam) {}
 string Literal::getValue() const { return this->value; }
-void Literal::accept(const shared_ptr<ExprVisitor> visitor) const {
+void Literal::accept(const shared_ptr<ExprVisitor<void>> visitor) const {
   visitor->visit(*this);
 };
 // accept methods
@@ -50,8 +50,6 @@ void PrintVisitor::visit(const Unary &unary) const {
   string tokenType = unary.getToken()->stringifyTokenType();
   exprs.push_back(expr);
   paranthesize(tokenType, exprs);
-
-  // cout << "Unary" << endl;
 };
 void PrintVisitor::visit(const Binary &binary) const {
 
@@ -74,7 +72,8 @@ void PrintVisitor::visit(const Literal &literal) const {
 // paranthesize
 void paranthesize(const string &name, vector<shared_ptr<const Expr>> &exprs) {
   cout << "(" << name;
-  shared_ptr<ExprVisitor> exprVisitorPtr = std::make_shared<PrintVisitor>();
+  shared_ptr<ExprVisitor<void>> exprVisitorPtr =
+      std::make_shared<PrintVisitor>();
   for (const shared_ptr<const Expr> &expr : exprs) {
 
     cout << " ";

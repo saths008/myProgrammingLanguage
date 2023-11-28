@@ -5,3 +5,6 @@ token
 ./src/scanner
 ./src/valgrind.rpt
 ./src/token
+/build/
+./build/*
+/third_party/

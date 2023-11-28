@@ -4,22 +4,20 @@ My own interpreted programming language.
 
 # Set up
 
-Please ensure a version of g++ that supports c++17 is installed.
+Please ensure:
 
-Navigate to the src folder:
+- a version of clang that supports c++17 is installed.
+- atleast cmake 3.22 is installed.
 
-```bash
-cd ./src
-```
+1. Create a folder named third_party and clone google test into this folder.
 
-To compile there is a Makefile so:
+googletest can be found at: `https://github.com/google/googletest`
 
-```bash
-make
-```
+2. Go to the scripts folder and execute the ./build_script.sh.
 
-Then to run:
+- If that doesn't work or you are on Windows, then:
 
-```bash
-./main <filename>
-```
+1.  Create and navigate to the build folder in the root.
+2.  run cmake .. (ie. put the output of cmake into the build folder)
+3.  run make
+4.  run the executable ./MyProgrammingLanguage_App

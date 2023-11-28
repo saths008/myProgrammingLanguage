@@ -1,19 +1,16 @@
 #ifndef EXPR_HPP
 #define EXPR_HPP
 #include "token.hpp"
-#include "tokentype.hpp"
-#include <algorithm>
-#include <any>
 #include <memory>
 #include <string>
-#include <variant>
+#include <vector>
 // Define the Expr, Binary, Grouping, Unary, Literal classes
-class ExprVisitor;
+template <typename T> class ExprVisitor;
 class PrintVisitor;
 class Expr {
 public:
   virtual ~Expr() {}
-  virtual void accept(std::shared_ptr<ExprVisitor> visitor) const = 0;
+  virtual void accept(std::shared_ptr<ExprVisitor<void>> visitor) const = 0;
 };
 
 class Binary : public Expr {
@@ -25,7 +22,7 @@ private:
 public:
   Binary(std::shared_ptr<const Expr> left, std::shared_ptr<const Expr> right,
          std::shared_ptr<const Token> op);
-  void accept(std::shared_ptr<ExprVisitor> visitor) const override;
+  void accept(std::shared_ptr<ExprVisitor<void>> visitor) const override;
   std::shared_ptr<const Expr> getLeft() const;
   std::shared_ptr<const Expr> getRight() const;
   std::shared_ptr<const Token> getOp() const;
@@ -36,7 +33,7 @@ private:
 
 public:
   Grouping(std::shared_ptr<const Expr> expr);
-  void accept(std::shared_ptr<ExprVisitor> visitor) const override;
+  void accept(std::shared_ptr<ExprVisitor<void>> visitor) const override;
   std::shared_ptr<const Expr> getExpr() const;
 };
 class Unary : public Expr {
@@ -46,7 +43,7 @@ private:
 
 public:
   Unary(std::shared_ptr<const Expr> expr, std::shared_ptr<const Token> token);
-  void accept(std::shared_ptr<ExprVisitor> visitor) const override;
+  void accept(std::shared_ptr<ExprVisitor<void>> visitor) const override;
   std::shared_ptr<const Expr> getExpr() const;
   std::shared_ptr<const Token> getToken() const;
 };
@@ -56,19 +53,18 @@ private:
 
 public:
   Literal(std::string value);
-  void accept(std::shared_ptr<ExprVisitor> visitor) const override;
+  void accept(std::shared_ptr<ExprVisitor<void>> visitor) const override;
   std::string getValue() const;
 };
-
-class ExprVisitor {
+template <typename T> class ExprVisitor {
 public:
-  virtual void visit(const Grouping &grouping) const = 0;
-  virtual void visit(const Unary &unary) const = 0;
-  virtual void visit(const Binary &binary) const = 0;
-  virtual void visit(const Literal &literal) const = 0;
+  virtual T visit(const Grouping &grouping) const = 0;
+  virtual T visit(const Unary &unary) const = 0;
+  virtual T visit(const Binary &binary) const = 0;
+  virtual T visit(const Literal &literal) const = 0;
   virtual ~ExprVisitor() = default;
 };
-class PrintVisitor : public ExprVisitor {
+class PrintVisitor : public ExprVisitor<void> {
 
 public:
   void visit(const Grouping &grouping) const override;

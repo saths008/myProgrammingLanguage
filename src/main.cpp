@@ -1,13 +1,11 @@
 #include "expr.hpp"
 #include "parser.hpp"
 #include "scanner.hpp"
-#include <any>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
-#include <variant>
 #include <vector>
 using std::cout, std::endl, std::string, std::vector, std::shared_ptr,
     std::unique_ptr;
@@ -68,5 +66,6 @@ int main(int argc, char *argv[]) {
       run(line);
     }
   }
+  cout << "Exiting........" << endl;
   return 0;
 }
