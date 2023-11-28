@@ -15,5 +15,7 @@ else
 fi
 
 cd "$BUILD_DIR"
+echo "Running make..."
+make
 ./MyProgrammingLanguage_App "$input_args"
 

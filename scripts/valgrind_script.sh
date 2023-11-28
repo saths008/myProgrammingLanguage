@@ -1,17 +1,20 @@
 #!/bin/bash
 
 #Run valgrind on the app from the build directory
-DEFAULT_FILEPATH="../src/hello.saath"
+DEFAULT_FILEPATH="src/hello.saath"
 
-echo "Do you want to use the default file path: $DEFAULT_FILEPATH? (y/n)"
-read use_default
+if [ -t 0 ]; then
+    echo "Do you want to use the default file path: $DEFAULT_FILEPATH? (y/n)"
+    read use_default
 
-if [ "$use_default" == "y" ]; then
-    input_args="$DEFAULT_FILEPATH"
+    if [ "$use_default" == "y" ]; then
+        input_args="$DEFAULT_FILEPATH"
+    else
+        echo "Enter file: "
+        read input_args
+    fi
 else
-    echo "Enter file: "
-    read input_args
+    input_args="$DEFAULT_FILEPATH"
 fi
 echo valgrind --leak-check=yes --log-file=valgrind.rpt "$@" "$input_args"
 valgrind --leak-check=yes --log-file=valgrind.rpt "$@" "$input_args"
-

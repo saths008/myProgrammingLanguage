@@ -36,6 +36,8 @@ string readFile(string filePath) {
   while (std::getline(MyReadFile, line)) {
     wholeFile = wholeFile + line + "\n";
   }
+  cout << "wholeFile: " << wholeFile << endl;
+  MyReadFile.close();
   return wholeFile;
 }
 void debugMain() {
@@ -50,6 +52,7 @@ int main(int argc, char *argv[]) {
   }
   // debugMain();
   if (argc > 1 && std::filesystem::exists(argv[1])) {
+    cout << "File exists" << endl;
     string fileRead = readFile(argv[1]);
     run(fileRead);
   } else if (argc == 1) {

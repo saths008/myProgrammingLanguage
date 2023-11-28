@@ -34,12 +34,19 @@ add_subdirectory(test)
 add_executable(${This}_App src/main.cpp)
 target_link_libraries(${This}_App PRIVATE ${This})
 set(VALGRIND_CMD valgrind --leak-check=yes --log-file=valgrind.rpt)
+# add_custom_target(memLeak
+#     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/valgrind_script.sh $<TARGET_FILE:${This}_App>
+#     COMMAND ${CMAKE_COMMAND} -E echo "Running with valgrind..."
+#     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#     COMMAND ${CMAKE_COMMAND} -E echo "valgrind report generated."
+#
+# )
 add_custom_target(memLeak
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/valgrind_script.sh $<TARGET_FILE:${This}_App>
     COMMAND ${CMAKE_COMMAND} -E echo "Running with valgrind..."
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND ${CMAKE_COMMAND} -E echo "valgrind report generated."
-
+    DEPENDS ${This}_App  # Ensure that the executable is built before running the target
 )
 
 # Add custom target for debug
