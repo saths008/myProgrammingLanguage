@@ -5,7 +5,6 @@
 #include <string>
 using std::unique_ptr, std::make_unique, std::cout, std::endl, std::string;
 TEST(ExampleTests, TestThatWorks) { EXPECT_TRUE(true); }
-TEST(ExampleTests, TestThatFails) { EXPECT_TRUE(false); }
 
 class ScannerTestFixture : public ::testing::Test {
 
