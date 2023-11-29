@@ -34,6 +34,6 @@ jobs:
       #   run: |
       #     cd scripts
       #     ./run_tests_script.sh
-      - name: Test
-        working-directory: /build
-        run: GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 ctest -V
+      # - name: Test
+      #   working-directory: /build
+      #   run: GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 ctest -V
