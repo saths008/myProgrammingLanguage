@@ -28,4 +28,6 @@ jobs:
           chmod +x scripts/*.sh
 
       - name: Run tests
-        run: ./scripts/run_tests_script.sh
+        run: |
+          cd scripts
+          ./run_tests_script.sh
