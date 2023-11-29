@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
 set(This Tests)
 set(Sources 
-  ExampleTest.cpp
+  ScannerTest.cpp
   )
 
 add_executable(${This} ${Sources})

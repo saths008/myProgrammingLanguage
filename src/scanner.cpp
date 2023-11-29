@@ -5,24 +5,24 @@
 #include <ctype.h>
 #include <iostream>
 #include <memory>
-#include <string.h>
 #include <unordered_map>
 #include <vector>
-using std::cout, std::endl, std::string, std::vector;
+using std::cout, std::endl, std::string, std::vector, std::make_unique,
+    std::make_shared, std::shared_ptr, std::unique_ptr, std::unordered_map;
 
 Scanner::Scanner(string sourceFile) {
   this->sourceFile = sourceFile;
   this->hadError = false;
-  this->tokenList = std::make_shared<vector<std::unique_ptr<Token>>>();
-  this->errorList = std::make_unique<vector<string>>();
+  this->tokenList = make_shared<vector<unique_ptr<Token>>>();
+  this->errorList = make_shared<vector<string>>();
   this->start = 0;
   this->current = 0;
   this->currentLine = 1;
   this->lenOfFile = this->sourceFile.length();
   initialiseKeywordMap();
 }
-std::string Scanner::getSourceFile() const { return sourceFile; }
-std::shared_ptr<vector<std::unique_ptr<Token>>> Scanner::scanFile() {
+string Scanner::getSourceFile() const { return sourceFile; }
+shared_ptr<vector<unique_ptr<Token>>> Scanner::scanFile() {
   this->scanTokens();
   this->printOutTokens();
   this->printOutErrors();
@@ -36,6 +36,12 @@ int Scanner::getCurrent() const { return current; }
 
 int Scanner::getLenOfFile() const { return lenOfFile; }
 int Scanner::getCurrentLine() const { return this->currentLine; }
+shared_ptr<vector<unique_ptr<Token>>> Scanner::getTokenList() const {
+  return this->tokenList;
+}
+shared_ptr<vector<string>> Scanner::getErrorList() const {
+  return this->errorList;
+}
 /**
  * Checks if the current index is within range of the source
  * file string.
@@ -159,7 +165,7 @@ void Scanner::scanToken() {
 void Scanner::addToken(TokenType type, int line, std::any data) {
 
   Token token(type, this->currentLine, data);
-  this->tokenList->push_back(std::make_unique<Token>(token));
+  this->tokenList->push_back(make_unique<Token>(token));
 }
 void Scanner::addError(string errorMessage) {
   this->hadError = true;
@@ -214,7 +220,7 @@ void Scanner::addString() {
     dataToInsert.append(currentSubstr);
   }
   this->addToken(tokenTypeToInsert, this->currentLine,
-                 (dataToInsert.empty()) ? std::string("") : dataToInsert);
+                 (dataToInsert.empty()) ? string("") : dataToInsert);
 }
 TokenType Scanner::matchKeyword(string tokenWord) {
   TokenType typeToInsert;
@@ -228,7 +234,7 @@ TokenType Scanner::matchKeyword(string tokenWord) {
   return typeToInsert;
 }
 void Scanner::initialiseKeywordMap() {
-  std::unordered_map<std::string, TokenType> localKeywordMap = {
+  std::unordered_map<string, TokenType> localKeywordMap = {
       {"and", TokenType::AND},       {"class", TokenType::CLASS},
       {"else", TokenType::ELSE},     {"false", TokenType ::FALSE},
       {"for", TokenType::FOR},       {"fun", TokenType::FUN},
@@ -239,8 +245,7 @@ void Scanner::initialiseKeywordMap() {
       {"var", TokenType::VAR},       {"while", TokenType::WHILE}};
 
   this->keywordMap =
-      std::make_unique<std::unordered_map<std::string, TokenType>>(
-          localKeywordMap);
+      make_unique<unordered_map<string, TokenType>>(localKeywordMap);
 }
 bool Scanner::match(char const expected) {
   if (!this->isInRange()) {
@@ -254,7 +259,7 @@ bool Scanner::match(char const expected) {
 }
 
 void Scanner::printOutTokens() const {
-  for (const std::unique_ptr<Token> &tokenPtr : *this->tokenList) {
+  for (const unique_ptr<Token> &tokenPtr : *this->tokenList) {
     cout << *tokenPtr << endl;
   }
 }

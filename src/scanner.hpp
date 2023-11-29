@@ -13,7 +13,7 @@ private:
   std::string sourceFile;
   bool hadError;
   std::shared_ptr<std::vector<std::unique_ptr<Token>>> tokenList;
-  std::unique_ptr<std::vector<std::string>> errorList;
+  std::shared_ptr<std::vector<std::string>> errorList;
   std::unique_ptr<std::unordered_map<std::string, TokenType>> keywordMap;
   int start;
   int current;
@@ -28,6 +28,8 @@ public:
   int getCurrent() const;
   int getLenOfFile() const;
   int getCurrentLine() const;
+  std::shared_ptr<std::vector<std::unique_ptr<Token>>> getTokenList() const;
+  std::shared_ptr<std::vector<std::string>> getErrorList() const;
   void initialiseKeywordMap();
   // Returns the TokenType of the keyword or IDENTIFIER if it is not a keyword
   TokenType matchKeyword(std::string tokenWord);
