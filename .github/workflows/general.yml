@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -22,15 +25,15 @@ jobs:
         uses: threeal/cmake-action@v1.3.0
         with:
           run-build: true
-
-      - name: Make scripts executable
-        run: |
-          chmod +x scripts/*.sh
+          run-test: true
+      # - name: Make scripts executable
+      #   run: |
+      #     chmod +x scripts/*.sh
 
       # - name: Run tests
       #   run: |
       #     cd scripts
       #     ./run_tests_script.sh
       - name: Test
-        working-directory: ${{runner.workspace}}/build
+        working-directory: /build
         run: GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 ctest -V
