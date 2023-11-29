@@ -13,22 +13,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up CMake
-        uses: actions/setup-cmake@v2
-        with:
-          cmake-version: "3.22"
-
       - name: Clone Google Test
         run: |
           mkdir third_party
           git clone --branch release-1.11.0 --depth 1 https://github.com/google/googletest.git third_party/googletest
 
+      - name: Configure, Build, and Test Project
+        uses: threeal/cmake-action@v1.3.0
+        with:
+          run-build: true
+
       - name: Make scripts executable
         run: |
           chmod +x scripts/*.sh
-
-      - name: Build
-        run: ./scripts/build_script.sh
 
       - name: Run tests
         run: ./scripts/run_tests_script.sh
