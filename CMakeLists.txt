@@ -1,28 +1,22 @@
 cmake_minimum_required(VERSION 3.22)
-#Set up C++ compiler and flags
 set(CMAKE_C_COMPILER "/usr/bin/clang")
-# set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 set(This MyProgrammingLanguage)
 project(${This} C CXX)
-# Set the C++ standard
-# set(CMAKE_CXX_STANDARD 17)
-# set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 enable_testing()
 # Find and include Google Test
 add_subdirectory(third_party/googletest)
 include_directories(src)
 set (Headers 
-  src/chunk.h
+  src/bytecodeSeq.h
   src/common.h
 src/debug.h
 src/memory.h
 )
 
 set (Sources 
-  src/chunk.c
+  src/bytecodeSeq.c
   src/debug.c
   src/memory.c
   src/main.c)

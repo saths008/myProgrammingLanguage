@@ -21,3 +21,7 @@ googletest can be found at: `https://github.com/google/googletest`
 2.  run cmake .. (ie. put the output of cmake into the build folder)
 3.  run make
 4.  run the executable ./MyProgrammingLanguage_App
+
+# High-Level Overview
+
+We have our program translated into bytecode, which is then executed by the VM. Bytecode allows us to target some idealised imaginary instruction set and so requiring emulation (software pretending to a be a chip in order to execute the bytecode, one instruction at a time)

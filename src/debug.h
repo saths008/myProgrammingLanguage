@@ -1,9 +1,9 @@
-#ifndef clox_debug_h
-#define clox_debug_h
+#ifndef c_debug_h
+#define c_debug_h
 
-#include "chunk.h"
+#include "bytecodeSeq.h"
 
-void disassembleChunk(Chunk *chunk, const char *name);
-int disassembleInstruction(Chunk *chunk, int offset);
+void disassembleBytecodeSeq(BytecodeSeq *bytecodeSeq, const char *name);
+int disassembleInstruction(BytecodeSeq *bytecodeSeq, int offset);
 
 #endif

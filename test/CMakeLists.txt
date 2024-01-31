@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.22)
-#Set up C++ compiler and flags
 set(CMAKE_C_COMPILER "/usr/bin/clang")
 set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
