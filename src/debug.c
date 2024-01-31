@@ -27,7 +27,7 @@ int disassembleInstruction(BytecodeSeq *bytecodeSeq, int offset) {
   printf("%04d ", offset);
   if (offset > 0 && bytecodeSeq->lineNumbers[offset] ==
                         bytecodeSeq->lineNumbers[offset - 1]) {
-    printf("   SAME ");
+    printf("   \u2191 ");
   } else {
     printf("%4d ", bytecodeSeq->lineNumbers[offset]);
   }
