@@ -3,4 +3,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+
+#define DEBUG_INSTR_EXECUTION
 #endif
