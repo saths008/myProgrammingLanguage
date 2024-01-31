@@ -5,5 +5,5 @@
 
 void disassembleBytecodeSeq(BytecodeSeq *bytecodeSeq, const char *name);
 int disassembleInstruction(BytecodeSeq *bytecodeSeq, int offset);
-
+void printValue(Value value);
 #endif

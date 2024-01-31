@@ -11,12 +11,14 @@ include_directories(src)
 set (Headers 
   src/bytecodeSeq.h
   src/common.h
+  src/constantPoolArray.h
 src/debug.h
 src/memory.h
 )
 
 set (Sources 
   src/bytecodeSeq.c
+  src/constantPoolArray.c
   src/debug.c
   src/memory.c
   src/main.c)
