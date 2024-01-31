@@ -8,6 +8,11 @@
 typedef enum {
   OP_RETURN,
   OP_CONSTANT, // Load a constant from the constant pool with arg. of index
+  OP_NEGATE,
+  OP_ADD,
+  OP_SUBTRACT,
+  OP_MULTIPLY,
+  OP_DIVIDE,
 } OpCode;
 
 typedef struct {

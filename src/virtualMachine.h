@@ -9,9 +9,12 @@
  * @brief Virtual machine, takes in a bytecode sequence and executes it.
  *
  */
+#define STACK_MAX 256
 typedef struct {
   BytecodeSeq *bytecodeSeq;
   uint8_t *instructionPointer; // points to the next instruction to be executed
+  Value *stackTop;             // points to the next empty slot in the stack
+  Value stack[STACK_MAX];
 } VirtualMachine;
 
 typedef enum {
@@ -20,6 +23,8 @@ typedef enum {
   INTERPRET_RUNTIME_ERROR
 } InterpretResultCode;
 
+void push(VirtualMachine *virtualMachine, Value value);
+Value pop(VirtualMachine *virtualMachine);
 void initVirtualMachine(VirtualMachine *virtualMachine);
 
 void freeVirtualMachine(VirtualMachine *virtualMachine);

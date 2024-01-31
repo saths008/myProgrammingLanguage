@@ -12,6 +12,7 @@ set (Headers
   src/bytecodeSeq.h
   src/common.h
   src/constantPoolArray.h
+  src/virtualMachine.h
 src/debug.h
 src/memory.h
 )
@@ -21,6 +22,7 @@ set (Sources
   src/constantPoolArray.c
   src/debug.c
   src/memory.c
+  src/virtualMachine.c
   src/main.c)
 add_library(${This} STATIC ${Sources} ${Headers})
 add_subdirectory(test)
