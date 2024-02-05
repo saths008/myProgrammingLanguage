@@ -5,6 +5,9 @@
 static void resetStack(VirtualMachine *virtualMachine) {
   virtualMachine->stackTop = virtualMachine->stack;
 }
+void freeVirtualMachine(VirtualMachine *virtualMachine) {
+  freeBytecodeSeq(virtualMachine->bytecodeSeq);
+}
 
 void initVirtualMachine(VirtualMachine *virtualMachine) {
   resetStack(virtualMachine);
@@ -19,10 +22,12 @@ Value pop(VirtualMachine *virtualMachine) {
 }
 
 InterpretResultCode interpret(VirtualMachine *virtualMachine,
-                              BytecodeSeq *bytecodeSeq) {
-  virtualMachine->bytecodeSeq = bytecodeSeq;
-  virtualMachine->instructionPointer = virtualMachine->bytecodeSeq->code;
-  return run(virtualMachine);
+                              const char *sourceCode) {
+  // virtualMachine->bytecodeSeq = bytecodeSeq;
+  // virtualMachine->instructionPointer = virtualMachine->bytecodeSeq->code;
+  // return run(virtualMachine);
+  compile(sourceCode);
+  return INTERPRET_OK;
 }
 
 InterpretResultCode run(VirtualMachine *virtualMachine) {

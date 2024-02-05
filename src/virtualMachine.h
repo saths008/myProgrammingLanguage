@@ -30,7 +30,7 @@ void initVirtualMachine(VirtualMachine *virtualMachine);
 void freeVirtualMachine(VirtualMachine *virtualMachine);
 
 InterpretResultCode interpret(VirtualMachine *virtualMachine,
-                              BytecodeSeq *bytecodeSeq);
+                              const char *sourceCode);
 
 InterpretResultCode run(VirtualMachine *virtualMachine);
 
