@@ -12,7 +12,7 @@ static void repl(VirtualMachine *virtualMachine) {
       break;
     }
 
-    interpret(&virtualMachine, line);
+    interpret(virtualMachine, line);
   }
 }
 static char *readFile(const char *path) {
@@ -51,17 +51,22 @@ static void runFile(VirtualMachine *virtualMachine, const char *path) {
     exit(70);
 }
 int main(int argc, const char *argv[]) {
+  VirtualMachine virtualMachine;
+  initVirtualMachine(&virtualMachine);
+
   if (argc == 1) {
-    repl();
+    repl(&virtualMachine);
   } else if (argc == 2) {
-    runFile(argv[1]);
+
+    runFile(&virtualMachine, argv[1]);
+    // interpret(&virtualMachine, &bytecodeSeq);
+
   } else {
+    freeVirtualMachine(&virtualMachine);
     fprintf(stderr, "Usage: %s [path]\n", argv[0]);
     exit(64);
   }
-  VirtualMachine virtualMachine;
-  initVirtualMachine(&virtualMachine);
-  // interpret(&virtualMachine, &bytecodeSeq);
   freeVirtualMachine(&virtualMachine);
+
   return 0;
 }

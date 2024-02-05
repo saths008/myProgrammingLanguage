@@ -1,5 +1,6 @@
 #include "virtualMachine.h"
 #include "bytecodeSeq.h"
+#include "compiler.h"
 #include "debug.h"
 
 static void resetStack(VirtualMachine *virtualMachine) {

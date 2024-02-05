@@ -13,8 +13,10 @@ set (Headers
   src/common.h
   src/constantPoolArray.h
   src/virtualMachine.h
+src/scanner.h
 src/debug.h
 src/memory.h
+src/compiler.h
 )
 
 set (Sources 
@@ -22,6 +24,8 @@ set (Sources
   src/constantPoolArray.c
   src/debug.c
   src/memory.c
+src/scanner.c
+src/compiler.c
   src/virtualMachine.c
   src/main.c)
 add_library(${This} STATIC ${Sources} ${Headers})

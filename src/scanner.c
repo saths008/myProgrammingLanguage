@@ -111,7 +111,7 @@ Token scanToken(Scanner *scanner) {
   if (isDigit(c))
     return number(scanner);
   if (isAlpha(c))
-    return identifier();
+    return identifier(scanner);
   switch (c) {
   case '(':
     return makeToken(scanner, TOKEN_LEFT_PAREN);
