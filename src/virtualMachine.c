@@ -24,11 +24,18 @@ Value pop(VirtualMachine *virtualMachine) {
 
 InterpretResultCode interpret(VirtualMachine *virtualMachine,
                               const char *sourceCode) {
-  // virtualMachine->bytecodeSeq = bytecodeSeq;
-  // virtualMachine->instructionPointer = virtualMachine->bytecodeSeq->code;
-  // return run(virtualMachine);
-  compile(sourceCode);
-  return INTERPRET_OK;
+  BytecodeSeq bytecodeSeq;
+  initBytecodeSeq(&bytecodeSeq);
+  if (!compile(sourceCode, &bytecodeSeq)) {
+    freeBytecodeSeq(&bytecodeSeq);
+    return INTERPRET_COMPILE_ERROR;
+  } else {
+    virtualMachine->bytecodeSeq = &bytecodeSeq;
+    virtualMachine->instructionPointer = virtualMachine->bytecodeSeq->code;
+    InterpretResultCode result = run(virtualMachine);
+    freeBytecodeSeq(&bytecodeSeq);
+    return result;
+  }
 }
 
 InterpretResultCode run(VirtualMachine *virtualMachine) {
