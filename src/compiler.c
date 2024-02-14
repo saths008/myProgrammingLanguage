@@ -70,6 +70,7 @@ static uint8_t makeConstant(Parser *parser, Value value) {
     return (uint8_t)constant;
   }
 }
+
 static void emitTwoBytes(Parser *parser, uint8_t byte1, uint8_t byte2) {
   emitByte(parser, byte1);
   emitByte(parser, byte2);
@@ -103,7 +104,9 @@ static void number(Parser *parser) {
   double value = strtod(parser->previous.start, NULL);
   emitConstant(parser, value);
 }
+
 static void grouping(Scanner *scanner, Parser *parser) {
+  // Assume that ( has already been consumed
   expression();
   consume(scanner, parser, TOKEN_RIGHT_PAREN, "Expect ')' after expression.");
 }
