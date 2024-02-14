@@ -5,7 +5,9 @@
 #include <stdlib.h>
 
 BytecodeSeq *compilingBytecodeSeq;
+
 static BytecodeSeq *currentBytecodeSeq() { return compilingBytecodeSeq; }
+
 static void emitByte(Parser *parser, uint8_t byte) {
   writeBytecodeSeq(currentBytecodeSeq(), byte, parser->previous.line);
 }
@@ -77,6 +79,10 @@ static void emitConstant(Parser *parser, Value value) {
 }
 
 void endCompiler(Parser *parser) { emitByte(parser, OP_RETURN); }
+static void expression();
+// static ParseRule *getRule(TokenType type);
+static void parsePrecedence(Precedence precedence);
+
 bool compile(const char *sourceCode, BytecodeSeq *bytecodeSeq) {
   Scanner scanner;
   initScanner(&scanner, sourceCode);
@@ -89,7 +95,29 @@ bool compile(const char *sourceCode, BytecodeSeq *bytecodeSeq) {
   endCompiler(&parser);
   return !parser.hadError;
 }
+static void parsePrecedence(Precedence precedence) {}
+
+// Parse all precedence levels >= PREC_ASSIGNMENT
+static void expression() { parsePrecedence(PREC_ASSIGNMENT); }
 static void number(Parser *parser) {
   double value = strtod(parser->previous.start, NULL);
-  emitConstant(value);
+  emitConstant(parser, value);
+}
+static void grouping(Scanner *scanner, Parser *parser) {
+  expression();
+  consume(scanner, parser, TOKEN_RIGHT_PAREN, "Expect ')' after expression.");
+}
+static void unary(Parser *parser) {
+  TokenType operatorType = parser->previous.type;
+
+  parsePrecedence(PREC_UNARY);
+
+  switch (operatorType) {
+  case TOKEN_MINUS:
+    // Push the operand and then the negate instruction
+    emitByte(parser, OP_NEGATE);
+    break;
+  default:
+    return;
+  }
 }
