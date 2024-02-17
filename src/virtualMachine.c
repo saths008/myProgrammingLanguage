@@ -7,10 +7,13 @@ static void resetStack(VirtualMachine *virtualMachine) {
   virtualMachine->stackTop = virtualMachine->stack;
 }
 void freeVirtualMachine(VirtualMachine *virtualMachine) {
-  freeBytecodeSeq(virtualMachine->bytecodeSeq);
+  if (virtualMachine->bytecodeSeq != NULL) {
+    freeBytecodeSeq(virtualMachine->bytecodeSeq);
+  }
 }
 
 void initVirtualMachine(VirtualMachine *virtualMachine) {
+  virtualMachine->bytecodeSeq = NULL;
   resetStack(virtualMachine);
 }
 void push(VirtualMachine *virtualMachine, Value value) {

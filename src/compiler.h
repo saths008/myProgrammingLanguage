@@ -15,24 +15,33 @@ typedef enum {
   PREC_CALL,       // . ()
   PREC_PRIMARY
 } Precedence;
+typedef void (*ParseFn)();
+
+typedef struct {
+  ParseFn prefix;
+  ParseFn infix;
+  Precedence precedence;
+} ParseRule;
+
 typedef struct {
   Token current;
   Token previous;
   bool hadError;
   bool panicMode;
 } Parser;
-void initParser(Parser *parser);
+void initParser();
 
 // Populate bytecodeSeq with the bytecode translation of sourceCode
 // Returns false if there is a compilation error
 bool compile(const char *sourceCode, BytecodeSeq *bytecodeSeq);
+static ParseRule *getRule(TokenType type);
+
 static void expression();
 static void parsePrecedence(Precedence precedence);
-static void advanceToken(Scanner *scanner, Parser *parser);
-static void errorAtCurrent(Parser *parser, const char *message);
-static void error(Parser *parser, const char *message);
-static void errorAt(Parser *parser, Token *token, const char *message);
-static void consume(Scanner *scanner, Parser *parser, TokenType type,
-                    const char *message);
+static void advanceToken();
+static void errorAtCurrent(const char *message);
+static void error(const char *message);
+static void errorAt(Token *token, const char *message);
+static void consume(TokenType type, const char *message);
 
 #endif

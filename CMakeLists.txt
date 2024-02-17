@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 set(CMAKE_C_COMPILER "/usr/bin/clang")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -g")
 set(This MyProgrammingLanguage)
 project(${This} C CXX)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)

@@ -1,5 +1,7 @@
 #include "scanner.h"
+#include "compiler.h"
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 void initScanner(Scanner *scanner, const char *sourceCode) {
   scanner->start = sourceCode;
@@ -47,9 +49,15 @@ static void skipWhitespaceAndComments(Scanner *scanner) {
     switch (c) {
     case ' ':
     case '\r':
-    case '\t':
+    case '\t': {
       advance(scanner);
       break;
+    }
+    case '\n': {
+      scanner->line++;
+      advance(scanner);
+      break;
+    }
     case '/':
       if (peekNext(scanner) == '/') {
         while (peek(scanner) != '\n' && !isAtEnd(scanner))
@@ -163,13 +171,21 @@ Token scanToken(Scanner *scanner) {
   skipWhitespaceAndComments(scanner);
   scanner->start = scanner->current;
 
-  if (isAtEnd(scanner))
+  if (isAtEnd(scanner)) {
+    printf("End of file\n");
     return makeToken(scanner, TOKEN_EOF);
+  }
   char c = advance(scanner);
-  if (isDigit(c))
+  printf("Scanning character: %c\n", c);
+  if (isDigit(c)) {
+    printf("Scanning number\n");
     return number(scanner);
-  if (isAlpha(c))
+  }
+  if (isAlpha(c)) {
+    printf("Scanning identifier\n");
     return identifier(scanner);
+  }
+  printf("Going to switch case \n");
   switch (c) {
   case '(':
     return makeToken(scanner, TOKEN_LEFT_PAREN);
@@ -187,10 +203,14 @@ Token scanToken(Scanner *scanner) {
     return makeToken(scanner, TOKEN_DOT);
   case '-':
     return makeToken(scanner, TOKEN_MINUS);
-  case '+':
+  case '+': {
+    printf("Scanning plus\n");
     return makeToken(scanner, TOKEN_PLUS);
-  case '/':
+  }
+  case '/': {
+    printf("Scanning slash\n");
     return makeToken(scanner, TOKEN_SLASH);
+  }
   case '*':
     return makeToken(scanner, TOKEN_STAR);
   case '!':
@@ -206,5 +226,6 @@ Token scanToken(Scanner *scanner) {
     return makeToken(scanner,
                      match(scanner, '=') ? TOKEN_GREATER_EQUAL : TOKEN_GREATER);
   }
+  printf("Unexpected character: %c\n", c);
   return errorToken(scanner, "Unexpected character.");
 }

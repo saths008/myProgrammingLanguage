@@ -5,4 +5,5 @@
 #include <stdint.h>
 
 #define DEBUG_INSTR_EXECUTION
+#define DEBUG_PRINT_CODE
 #endif

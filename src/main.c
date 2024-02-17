@@ -1,6 +1,7 @@
 #include "bytecodeSeq.h"
 #include "debug.h"
 #include "virtualMachine.h"
+#include <stdio.h>
 #include <stdlib.h>
 static void repl(VirtualMachine *virtualMachine) {
   char line[1024];
@@ -12,6 +13,7 @@ static void repl(VirtualMachine *virtualMachine) {
       break;
     }
 
+    printf("Interpreting...");
     interpret(virtualMachine, line);
   }
 }
@@ -41,8 +43,13 @@ static char *readFile(const char *path) {
   return buffer;
 }
 static void runFile(VirtualMachine *virtualMachine, const char *path) {
+  printf("Reading file...");
   char *source = readFile(path);
+  printf("File read, interpreting...");
+
   InterpretResultCode result = interpret(virtualMachine, source);
+  printf("Interpreted file...");
+
   free(source);
 
   if (result == INTERPRET_COMPILE_ERROR)
@@ -51,15 +58,18 @@ static void runFile(VirtualMachine *virtualMachine, const char *path) {
     exit(70);
 }
 int main(int argc, const char *argv[]) {
+  // printf("In main");
   VirtualMachine virtualMachine;
   initVirtualMachine(&virtualMachine);
+  printf("Virtual machine initialized");
+  // argv[1] = "../hello.vi"; argc = 2;
 
   if (argc == 1) {
+    printf("In repl");
     repl(&virtualMachine);
   } else if (argc == 2) {
 
     runFile(&virtualMachine, argv[1]);
-    // interpret(&virtualMachine, &bytecodeSeq);
 
   } else {
     freeVirtualMachine(&virtualMachine);
