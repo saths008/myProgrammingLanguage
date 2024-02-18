@@ -29,8 +29,9 @@ void writeBytecodeSeq(BytecodeSeq *bytecodeSeq, uint8_t byte, int lineNumber) {
 }
 
 void freeBytecodeSeq(BytecodeSeq *bytecodeSeq) {
-  FREE_ARRAY(uint8_t, bytecodeSeq->code, bytecodeSeq->capacity);
   FREE_ARRAY(int, bytecodeSeq->lineNumbers, bytecodeSeq->capacity);
+  FREE_ARRAY(uint8_t, bytecodeSeq->code, bytecodeSeq->capacity);
+
   freeConstantPoolArray(&bytecodeSeq->constantPoolArray);
   // memory is left in an indeterminate state so initBytecodeSeq to reset
   // fields.

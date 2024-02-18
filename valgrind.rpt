@@ -1,38 +1,15 @@
-==22694== Memcheck, a memory error detector
-==22694== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
-==22694== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
-==22694== Command: /home/saath/Dev/myProgrammingLanguage/build/MyProgrammingLanguage_App
-==22694== Parent PID: 22693
-==22694== 
-==22694== Use of uninitialised value of size 8
-==22694==    at 0x109670: freeBytecodeSeq (in /home/saath/Dev/myProgrammingLanguage/build/MyProgrammingLanguage_App)
-==22694==    by 0x1091C7: freeVirtualMachine (in /home/saath/Dev/myProgrammingLanguage/build/MyProgrammingLanguage_App)
-==22694==    by 0x1091A0: main (in /home/saath/Dev/myProgrammingLanguage/build/MyProgrammingLanguage_App)
-==22694== 
-==22694== Invalid read of size 8
-==22694==    at 0x109670: freeBytecodeSeq (in /home/saath/Dev/myProgrammingLanguage/build/MyProgrammingLanguage_App)
-==22694==    by 0x1091C7: freeVirtualMachine (in /home/saath/Dev/myProgrammingLanguage/build/MyProgrammingLanguage_App)
-==22694==    by 0x1091A0: main (in /home/saath/Dev/myProgrammingLanguage/build/MyProgrammingLanguage_App)
-==22694==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
-==22694== 
-==22694== 
-==22694== Process terminating with default action of signal 11 (SIGSEGV)
-==22694==  Access not within mapped region at address 0x0
-==22694==    at 0x109670: freeBytecodeSeq (in /home/saath/Dev/myProgrammingLanguage/build/MyProgrammingLanguage_App)
-==22694==    by 0x1091C7: freeVirtualMachine (in /home/saath/Dev/myProgrammingLanguage/build/MyProgrammingLanguage_App)
-==22694==    by 0x1091A0: main (in /home/saath/Dev/myProgrammingLanguage/build/MyProgrammingLanguage_App)
-==22694==  If you believe this happened as a result of a stack
-==22694==  overflow in your program's main thread (unlikely but
-==22694==  possible), you can try to increase the size of the
-==22694==  main thread stack using the --main-stacksize= flag.
-==22694==  The main thread stack size used in this run was 8388608.
-==22694== 
-==22694== HEAP SUMMARY:
-==22694==     in use at exit: 0 bytes in 0 blocks
-==22694==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
-==22694== 
-==22694== All heap blocks were freed -- no leaks are possible
-==22694== 
-==22694== Use --track-origins=yes to see where uninitialised values come from
-==22694== For lists of detected and suppressed errors, rerun with: -s
-==22694== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==31820== Memcheck, a memory error detector
+==31820== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==31820== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==31820== Command: /home/saath/Dev/myProgrammingLanguage/build/MyProgrammingLanguage_App
+==31820== Parent PID: 31819
+==31820== 
+==31820== 
+==31820== HEAP SUMMARY:
+==31820==     in use at exit: 0 bytes in 0 blocks
+==31820==   total heap usage: 7 allocs, 7 frees, 5,729 bytes allocated
+==31820== 
+==31820== All heap blocks were freed -- no leaks are possible
+==31820== 
+==31820== For lists of detected and suppressed errors, rerun with: -s
+==31820== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

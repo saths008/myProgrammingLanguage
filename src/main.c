@@ -1,8 +1,7 @@
-#include "bytecodeSeq.h"
-#include "debug.h"
 #include "virtualMachine.h"
 #include <stdio.h>
 #include <stdlib.h>
+
 static void repl(VirtualMachine *virtualMachine) {
   char line[1024];
   for (;;) {
@@ -17,6 +16,7 @@ static void repl(VirtualMachine *virtualMachine) {
     interpret(virtualMachine, line);
   }
 }
+
 static char *readFile(const char *path) {
   FILE *file = fopen(path, "rb");
   if (file == NULL) {
@@ -42,6 +42,7 @@ static char *readFile(const char *path) {
   fclose(file);
   return buffer;
 }
+
 static void runFile(VirtualMachine *virtualMachine, const char *path) {
   printf("Reading file...");
   char *source = readFile(path);
@@ -57,12 +58,14 @@ static void runFile(VirtualMachine *virtualMachine, const char *path) {
   if (result == INTERPRET_RUNTIME_ERROR)
     exit(70);
 }
+
 int main(int argc, const char *argv[]) {
   // printf("In main");
   VirtualMachine virtualMachine;
   initVirtualMachine(&virtualMachine);
   printf("Virtual machine initialized");
-  // argv[1] = "../hello.vi"; argc = 2;
+  argv[1] = "hello.vi";
+  argc = 2;
 
   if (argc == 1) {
     printf("In repl");
@@ -70,13 +73,14 @@ int main(int argc, const char *argv[]) {
   } else if (argc == 2) {
 
     runFile(&virtualMachine, argv[1]);
-
-  } else {
+  }
+  // freeVirtualMachine(&virtualMachine);
+  if (argc > 2) {
     freeVirtualMachine(&virtualMachine);
-    fprintf(stderr, "Usage: %s [path]\n", argv[0]);
+
+    fprintf(stderr, "Usage: clox [path]\n");
     exit(64);
   }
-  freeVirtualMachine(&virtualMachine);
 
   return 0;
 }

@@ -7,6 +7,7 @@ static void resetStack(VirtualMachine *virtualMachine) {
   virtualMachine->stackTop = virtualMachine->stack;
 }
 void freeVirtualMachine(VirtualMachine *virtualMachine) {
+  printf("Freeing virtual machine\n");
   if (virtualMachine->bytecodeSeq != NULL) {
     freeBytecodeSeq(virtualMachine->bytecodeSeq);
   }
