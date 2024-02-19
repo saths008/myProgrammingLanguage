@@ -16,7 +16,7 @@ typedef struct {
     double number;
   } as;
 } Value;
-
+bool valuesEqual(Value a, Value b);
 // From C value to Value
 #define BOOL_VAL(value) ((Value){VAL_BOOL, {.boolean = value}})
 #define NIL_VAL ((Value){VAL_NIL, {.number = 0}})

@@ -15,7 +15,19 @@ static int constantInstruction(const char *name, BytecodeSeq *bytecodeSeq,
   printf("'\n");
   return offset + 2;
 }
-void printValue(Value value) { printf("%g", AS_NUMBER(value)); }
+void printValue(Value value) {
+  switch (value.type) {
+  case VAL_BOOL:
+    printf(AS_BOOL(value) ? "true" : "false");
+    break;
+  case VAL_NIL:
+    printf("nil");
+    break;
+  case VAL_NUMBER:
+    printf("%g", AS_NUMBER(value));
+    break;
+  }
+}
 void disassembleBytecodeSeq(BytecodeSeq *bytecodeSeq, const char *name) {
 
   printf("== %s ==\n", name);
@@ -49,6 +61,21 @@ int disassembleInstruction(BytecodeSeq *bytecodeSeq, int offset) {
     return simpleInstruction("OP_MULTIPLY", offset);
   case OP_DIVIDE:
     return simpleInstruction("OP_DIVIDE", offset);
+  case OP_NIL:
+    return simpleInstruction("OP_NIL", offset);
+  case OP_NOT:
+    return simpleInstruction("OP_NOT", offset);
+  case OP_TRUE:
+    return simpleInstruction("OP_TRUE", offset);
+  case OP_FALSE:
+    return simpleInstruction("OP_FALSE", offset);
+  case OP_EQUAL:
+    return simpleInstruction("OP_EQUAL", offset);
+  case OP_GREATER:
+    return simpleInstruction("OP_GREATER", offset);
+  case OP_LESS:
+    return simpleInstruction("OP_LESS", offset);
+
   default:
     printf("Unknown opcode %d\n", instruction);
     return offset + 1;

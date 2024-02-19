@@ -25,6 +25,7 @@ set (Sources
   src/constantPoolArray.c
   src/debug.c
   src/memory.c
+  src/value.c
 src/scanner.c
 src/compiler.c
   src/virtualMachine.c

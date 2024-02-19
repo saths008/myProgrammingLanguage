@@ -54,6 +54,9 @@ static void runtimeError(VirtualMachine *vm, const char *format, ...) {
   fprintf(stderr, "[line %d] in script\n", line);
   resetStack(vm);
 }
+static bool isFalsey(Value value) {
+  return IS_NIL(value) || (IS_BOOL(value) && !AS_BOOL(value));
+}
 static Value peek(VirtualMachine *vm, int distance) {
   return vm->stackTop[-1 - distance];
 }
@@ -63,11 +66,16 @@ InterpretResultCode run(VirtualMachine *virtualMachine) {
 #define READ_CONSTANT()                                                        \
   (virtualMachine->bytecodeSeq->constantPoolArray.values[READ_BYTE()])
 
-#define BINARY_OP(op)                                                          \
+#define BINARY_OP(valueType, op)                                               \
   do {                                                                         \
-    double b = pop(virtualMachine);                                            \
-    double a = pop(virtualMachine);                                            \
-    push(virtualMachine, a op b);                                              \
+    if (!IS_NUMBER(peek(virtualMachine, 0)) ||                                 \
+        !IS_NUMBER(peek(virtualMachine, 1))) {                                 \
+      runtimeError(virtualMachine, "Operands must be numbers.");               \
+      return INTERPRET_RUNTIME_ERROR;                                          \
+    }                                                                          \
+    double b = AS_NUMBER(pop(virtualMachine));                                 \
+    double a = AS_NUMBER(pop(virtualMachine));                                 \
+    push(virtualMachine, valueType(a op b));                                   \
   } while (false)
 
   while (true) {
@@ -93,9 +101,39 @@ InterpretResultCode run(VirtualMachine *virtualMachine) {
       printf("\n");
       return INTERPRET_OK;
     }
+    case OP_GREATER: {
+      BINARY_OP(BOOL_VAL, >);
+      break;
+    }
+    case OP_LESS: {
+      BINARY_OP(BOOL_VAL, <);
+      break;
+    }
     case OP_CONSTANT: {
       Value constant = READ_CONSTANT();
       push(virtualMachine, constant);
+      break;
+    }
+    case OP_NIL: {
+      push(virtualMachine, NIL_VAL);
+      break;
+    }
+    case OP_TRUE: {
+      push(virtualMachine, BOOL_VAL(true));
+      break;
+    }
+    case OP_NOT:
+      push(virtualMachine, BOOL_VAL(isFalsey(pop(virtualMachine))));
+      break;
+    case OP_EQUAL: {
+      Value b = pop(virtualMachine);
+      Value a = pop(virtualMachine);
+      push(virtualMachine, BOOL_VAL(valuesEqual(a, b)));
+      break;
+    }
+
+    case OP_FALSE: {
+      push(virtualMachine, BOOL_VAL(false));
       break;
     }
     case OP_NEGATE: {
@@ -107,19 +145,20 @@ InterpretResultCode run(VirtualMachine *virtualMachine) {
       break;
     }
     case OP_ADD: {
-      BINARY_OP(+);
+      BINARY_OP(NUMBER_VAL, +);
+
       break;
     }
     case OP_SUBTRACT: {
-      BINARY_OP(-);
+      BINARY_OP(NUMBER_VAL, -);
       break;
     }
     case OP_MULTIPLY: {
-      BINARY_OP(*);
+      BINARY_OP(NUMBER_VAL, *);
       break;
     }
     case OP_DIVIDE: {
-      BINARY_OP(/);
+      BINARY_OP(NUMBER_VAL, /);
       break;
     }
     }

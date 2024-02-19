@@ -37,6 +37,7 @@ bool compile(const char *sourceCode, BytecodeSeq *bytecodeSeq);
 static ParseRule *getRule(TokenType type);
 
 static void expression();
+static void literal();
 static void parsePrecedence(Precedence precedence);
 static void advanceToken();
 static void errorAtCurrent(const char *message);

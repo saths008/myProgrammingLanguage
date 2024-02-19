@@ -64,8 +64,8 @@ int main(int argc, const char *argv[]) {
   VirtualMachine virtualMachine;
   initVirtualMachine(&virtualMachine);
   printf("Virtual machine initialized");
-  argv[1] = "hello.vi";
-  argc = 2;
+  // argv[1] = "hello.vi";
+  // argc = 2;
 
   if (argc == 1) {
     printf("In repl");
