@@ -13,6 +13,7 @@ set (Headers
   src/common.h
   src/constantPoolArray.h
   src/virtualMachine.h
+  src/value.h
 src/scanner.h
 src/debug.h
 src/memory.h

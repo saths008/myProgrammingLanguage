@@ -2,6 +2,7 @@
 #include "bytecodeSeq.h"
 #include "debug.h"
 #include "scanner.h"
+#include "value.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -135,7 +136,7 @@ static void number() {
   }
   double value = strtod(parser.previous.start, NULL);
   printf("Value: %f\n", value);
-  emitConstant(value);
+  emitConstant(NUMBER_VAL(value));
 }
 static void binary() {
   printf("Binary\n");

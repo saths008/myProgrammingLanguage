@@ -2,12 +2,13 @@
 #include "bytecodeSeq.h"
 #include "compiler.h"
 #include "debug.h"
+#include "value.h"
+#include <stdarg.h>
 
 static void resetStack(VirtualMachine *virtualMachine) {
   virtualMachine->stackTop = virtualMachine->stack;
 }
 void freeVirtualMachine(VirtualMachine *virtualMachine) {
-  printf("Freeing virtual machine\n");
   if (virtualMachine->bytecodeSeq != NULL) {
     freeBytecodeSeq(virtualMachine->bytecodeSeq);
   }
@@ -41,7 +42,21 @@ InterpretResultCode interpret(VirtualMachine *virtualMachine,
     return result;
   }
 }
+static void runtimeError(VirtualMachine *vm, const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  vfprintf(stderr, format, args);
+  va_end(args);
+  fputs("\n", stderr);
 
+  size_t instruction = vm->instructionPointer - vm->bytecodeSeq->code - 1;
+  int line = vm->bytecodeSeq->lineNumbers[instruction];
+  fprintf(stderr, "[line %d] in script\n", line);
+  resetStack(vm);
+}
+static Value peek(VirtualMachine *vm, int distance) {
+  return vm->stackTop[-1 - distance];
+}
 InterpretResultCode run(VirtualMachine *virtualMachine) {
 
 #define READ_BYTE() (*(virtualMachine->instructionPointer++))
@@ -84,7 +99,11 @@ InterpretResultCode run(VirtualMachine *virtualMachine) {
       break;
     }
     case OP_NEGATE: {
-      push(virtualMachine, -pop(virtualMachine));
+      if (!IS_NUMBER(peek(virtualMachine, 0))) {
+        runtimeError(virtualMachine, "Operand must be a number.");
+        return INTERPRET_RUNTIME_ERROR;
+      }
+      push(virtualMachine, NUMBER_VAL(-AS_NUMBER(pop(virtualMachine))));
       break;
     }
     case OP_ADD: {

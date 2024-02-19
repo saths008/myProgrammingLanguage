@@ -1,9 +1,9 @@
 #ifndef c_constantPoolArray_h
 #define c_constantPoolArray_h
-
 #include "common.h"
+#include "value.h"
 
-typedef double Value;
+// typedef double Value;
 typedef struct {
   int capacity;
   int count;

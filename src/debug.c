@@ -15,7 +15,7 @@ static int constantInstruction(const char *name, BytecodeSeq *bytecodeSeq,
   printf("'\n");
   return offset + 2;
 }
-void printValue(Value value) { printf("%g", value); }
+void printValue(Value value) { printf("%g", AS_NUMBER(value)); }
 void disassembleBytecodeSeq(BytecodeSeq *bytecodeSeq, const char *name) {
 
   printf("== %s ==\n", name);
