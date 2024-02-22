@@ -2,87 +2,98 @@
 #include "bytecodeSeq.h"
 #include "compiler.h"
 #include "debug.h"
+#include "memory.h"
+#include "object.h"
 #include "value.h"
 #include <stdarg.h>
+#include <string.h>
 
-static void resetStack(VirtualMachine *virtualMachine) {
-  virtualMachine->stackTop = virtualMachine->stack;
-}
-void freeVirtualMachine(VirtualMachine *virtualMachine) {
-  if (virtualMachine->bytecodeSeq != NULL) {
-    freeBytecodeSeq(virtualMachine->bytecodeSeq);
-  }
-}
+VirtualMachine virtualMachine;
+static void resetStack() { virtualMachine.stackTop = virtualMachine.stack; }
+void freeVirtualMachine() { freeObjects(); }
 
-void initVirtualMachine(VirtualMachine *virtualMachine) {
-  virtualMachine->bytecodeSeq = NULL;
-  resetStack(virtualMachine);
+void initVirtualMachine() {
+  virtualMachine.bytecodeSeq = NULL;
+  resetStack();
+  virtualMachine.objects = NULL;
 }
-void push(VirtualMachine *virtualMachine, Value value) {
-  *virtualMachine->stackTop = value;
-  virtualMachine->stackTop++;
+void push(Value value) {
+  *virtualMachine.stackTop = value;
+  virtualMachine.stackTop++;
 }
-Value pop(VirtualMachine *virtualMachine) {
-  virtualMachine->stackTop--;
-  return *virtualMachine->stackTop;
+Value pop() {
+  virtualMachine.stackTop--;
+  return *virtualMachine.stackTop;
 }
 
-InterpretResultCode interpret(VirtualMachine *virtualMachine,
-                              const char *sourceCode) {
+InterpretResultCode interpret(const char *sourceCode) {
   BytecodeSeq bytecodeSeq;
   initBytecodeSeq(&bytecodeSeq);
   if (!compile(sourceCode, &bytecodeSeq)) {
     freeBytecodeSeq(&bytecodeSeq);
     return INTERPRET_COMPILE_ERROR;
   } else {
-    virtualMachine->bytecodeSeq = &bytecodeSeq;
-    virtualMachine->instructionPointer = virtualMachine->bytecodeSeq->code;
-    InterpretResultCode result = run(virtualMachine);
+    virtualMachine.bytecodeSeq = &bytecodeSeq;
+    virtualMachine.instructionPointer = virtualMachine.bytecodeSeq->code;
+    InterpretResultCode result = run();
     freeBytecodeSeq(&bytecodeSeq);
     return result;
   }
 }
-static void runtimeError(VirtualMachine *vm, const char *format, ...) {
+static void runtimeError(const char *format, ...) {
   va_list args;
   va_start(args, format);
   vfprintf(stderr, format, args);
   va_end(args);
   fputs("\n", stderr);
 
-  size_t instruction = vm->instructionPointer - vm->bytecodeSeq->code - 1;
-  int line = vm->bytecodeSeq->lineNumbers[instruction];
+  size_t instruction =
+      virtualMachine.instructionPointer - virtualMachine.bytecodeSeq->code - 1;
+  int line = virtualMachine.bytecodeSeq->lineNumbers[instruction];
   fprintf(stderr, "[line %d] in script\n", line);
-  resetStack(vm);
+  resetStack();
 }
 static bool isFalsey(Value value) {
   return IS_NIL(value) || (IS_BOOL(value) && !AS_BOOL(value));
 }
-static Value peek(VirtualMachine *vm, int distance) {
-  return vm->stackTop[-1 - distance];
+static Value peek(int distance) {
+  return virtualMachine.stackTop[-1 - distance];
 }
-InterpretResultCode run(VirtualMachine *virtualMachine) {
+static void concatenate() {
+  ObjString *b = AS_STRING(pop());
+  ObjString *a = AS_STRING(pop());
 
-#define READ_BYTE() (*(virtualMachine->instructionPointer++))
+  int length = a->length + b->length;
+  char *chars = ALLOCATE(char, length + 1);
+  memcpy(chars, a->chars, a->length);
+  memcpy(chars + a->length, b->chars, b->length);
+  chars[length] = '\0';
+
+  ObjString *result = takeString(chars, length);
+  push(OBJ_VAL(result));
+}
+InterpretResultCode run() {
+
+#define READ_BYTE() (*(virtualMachine.instructionPointer++))
 #define READ_CONSTANT()                                                        \
-  (virtualMachine->bytecodeSeq->constantPoolArray.values[READ_BYTE()])
+  (virtualMachine.bytecodeSeq->constantPoolArray.values[READ_BYTE()])
 
 #define BINARY_OP(valueType, op)                                               \
   do {                                                                         \
-    if (!IS_NUMBER(peek(virtualMachine, 0)) ||                                 \
-        !IS_NUMBER(peek(virtualMachine, 1))) {                                 \
-      runtimeError(virtualMachine, "Operands must be numbers.");               \
+    if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) {                          \
+      runtimeError("Operands must be numbers.");                               \
       return INTERPRET_RUNTIME_ERROR;                                          \
     }                                                                          \
-    double b = AS_NUMBER(pop(virtualMachine));                                 \
-    double a = AS_NUMBER(pop(virtualMachine));                                 \
-    push(virtualMachine, valueType(a op b));                                   \
+    double b = AS_NUMBER(pop());                                               \
+    double a = AS_NUMBER(pop());                                               \
+    push(valueType(a op b));                                                   \
   } while (false)
 
   while (true) {
 // Flag to disassemble the instruction
 #ifdef DEBUG_INSTR_EXECUTION
     printf("          ");
-    for (Value *slot = virtualMachine->stack; slot < virtualMachine->stackTop;
+    for (Value *slot = virtualMachine.stack; slot < virtualMachine.stackTop;
          slot++) {
       printf("[ ");
       printValue(*slot);
@@ -90,14 +101,14 @@ InterpretResultCode run(VirtualMachine *virtualMachine) {
     }
     printf("\n");
 
-    disassembleInstruction(virtualMachine->bytecodeSeq,
-                           (int)(virtualMachine->instructionPointer -
-                                 virtualMachine->bytecodeSeq->code));
+    disassembleInstruction(virtualMachine.bytecodeSeq,
+                           (int)(virtualMachine.instructionPointer -
+                                 virtualMachine.bytecodeSeq->code));
 #endif
     uint8_t instruction = READ_BYTE();
     switch (instruction) {
     case OP_RETURN: {
-      printValue(pop(virtualMachine));
+      printValue(pop());
       printf("\n");
       return INTERPRET_OK;
     }
@@ -109,44 +120,52 @@ InterpretResultCode run(VirtualMachine *virtualMachine) {
       BINARY_OP(BOOL_VAL, <);
       break;
     }
+    case OP_ADD: {
+      if (IS_STRING(peek(0)) && IS_STRING(peek(1))) {
+        concatenate();
+      } else if (IS_NUMBER(peek(0)) && IS_NUMBER(peek(1))) {
+        double b = AS_NUMBER(pop());
+        double a = AS_NUMBER(pop());
+        push(NUMBER_VAL(a + b));
+      } else {
+        runtimeError("Operands must be two numbers or two strings.");
+        return INTERPRET_RUNTIME_ERROR;
+      }
+      break;
+    }
     case OP_CONSTANT: {
       Value constant = READ_CONSTANT();
-      push(virtualMachine, constant);
+      push(constant);
       break;
     }
     case OP_NIL: {
-      push(virtualMachine, NIL_VAL);
+      push(NIL_VAL);
       break;
     }
     case OP_TRUE: {
-      push(virtualMachine, BOOL_VAL(true));
+      push(BOOL_VAL(true));
       break;
     }
     case OP_NOT:
-      push(virtualMachine, BOOL_VAL(isFalsey(pop(virtualMachine))));
+      push(BOOL_VAL(isFalsey(pop())));
       break;
     case OP_EQUAL: {
-      Value b = pop(virtualMachine);
-      Value a = pop(virtualMachine);
-      push(virtualMachine, BOOL_VAL(valuesEqual(a, b)));
+      Value b = pop();
+      Value a = pop();
+      push(BOOL_VAL(valuesEqual(a, b)));
       break;
     }
 
     case OP_FALSE: {
-      push(virtualMachine, BOOL_VAL(false));
+      push(BOOL_VAL(false));
       break;
     }
     case OP_NEGATE: {
-      if (!IS_NUMBER(peek(virtualMachine, 0))) {
-        runtimeError(virtualMachine, "Operand must be a number.");
+      if (!IS_NUMBER(peek(0))) {
+        runtimeError("Operand must be a number.");
         return INTERPRET_RUNTIME_ERROR;
       }
-      push(virtualMachine, NUMBER_VAL(-AS_NUMBER(pop(virtualMachine))));
-      break;
-    }
-    case OP_ADD: {
-      BINARY_OP(NUMBER_VAL, +);
-
+      push(NUMBER_VAL(-AS_NUMBER(pop())));
       break;
     }
     case OP_SUBTRACT: {

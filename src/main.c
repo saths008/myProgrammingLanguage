@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void repl(VirtualMachine *virtualMachine) {
+static void repl() {
   char line[1024];
   for (;;) {
     printf("> ");
@@ -13,7 +13,7 @@ static void repl(VirtualMachine *virtualMachine) {
     }
 
     printf("Interpreting...");
-    interpret(virtualMachine, line);
+    interpret(line);
   }
 }
 
@@ -43,12 +43,12 @@ static char *readFile(const char *path) {
   return buffer;
 }
 
-static void runFile(VirtualMachine *virtualMachine, const char *path) {
+static void runFile(const char *path) {
   printf("Reading file...");
   char *source = readFile(path);
   printf("File read, interpreting...");
 
-  InterpretResultCode result = interpret(virtualMachine, source);
+  InterpretResultCode result = interpret(source);
   printf("Interpreted file...");
 
   free(source);
@@ -60,23 +60,20 @@ static void runFile(VirtualMachine *virtualMachine, const char *path) {
 }
 
 int main(int argc, const char *argv[]) {
-  // printf("In main");
-  VirtualMachine virtualMachine;
-  initVirtualMachine(&virtualMachine);
+  initVirtualMachine();
   printf("Virtual machine initialized");
-  // argv[1] = "hello.vi";
-  // argc = 2;
 
   if (argc == 1) {
     printf("In repl");
-    repl(&virtualMachine);
+    repl();
+    freeVirtualMachine();
   } else if (argc == 2) {
 
-    runFile(&virtualMachine, argv[1]);
+    runFile(argv[1]);
+    freeVirtualMachine();
   }
-  // freeVirtualMachine(&virtualMachine);
   if (argc > 2) {
-    freeVirtualMachine(&virtualMachine);
+    freeVirtualMachine();
 
     fprintf(stderr, "Usage: clox [path]\n");
     exit(64);

@@ -1,12 +1,12 @@
 #include "compiler.h"
 #include "bytecodeSeq.h"
 #include "debug.h"
+#include "object.h"
 #include "scanner.h"
 #include "value.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-Scanner scanner;
 Parser parser;
 BytecodeSeq *compilingBytecodeSeq;
 static ParseRule *getRule(TokenType type);
@@ -27,7 +27,7 @@ static void advanceToken() {
   parser.previous = parser.current;
 
   for (;;) {
-    parser.current = scanToken(&scanner);
+    parser.current = scanToken();
     if (parser.current.type != TOKEN_ERROR) {
       printf("Token type: %d\n", parser.current.type);
       break;
@@ -98,7 +98,7 @@ static void parsePrecedence(Precedence precedence);
 
 bool compile(const char *sourceCode, BytecodeSeq *bytecodeSeq) {
   printf("Source code:\n%s\n", sourceCode);
-  initScanner(&scanner, sourceCode);
+  initScanner(sourceCode);
   compilingBytecodeSeq = bytecodeSeq;
   initParser();
   advanceToken();
@@ -210,7 +210,10 @@ static void literal() {
     return; // Unreachable.
   }
 }
-
+static void string() {
+  emitConstant(OBJ_VAL(
+      copyString(parser.previous.start + 1, parser.previous.length - 2)));
+}
 static void unary() {
   printf("Unary\n");
   TokenType operatorType = parser.previous.type;
@@ -250,7 +253,7 @@ ParseRule rules[] = {
     [TOKEN_LESS] = {NULL, binary, PREC_COMPARISON},
     [TOKEN_LESS_EQUAL] = {NULL, binary, PREC_COMPARISON},
     [TOKEN_IDENTIFIER] = {NULL, NULL, PREC_NONE},
-    [TOKEN_STRING] = {NULL, NULL, PREC_NONE},
+    [TOKEN_STRING] = {string, NULL, PREC_NONE},
     [TOKEN_NUMBER] = {number, NULL, PREC_NONE},
     [TOKEN_AND] = {NULL, NULL, PREC_NONE},
     [TOKEN_CLASS] = {NULL, NULL, PREC_NONE},

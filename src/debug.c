@@ -1,5 +1,6 @@
 #include "debug.h"
 #include "bytecodeSeq.h"
+#include "object.h"
 #include <stdint.h>
 #include <stdio.h>
 static int simpleInstruction(const char *name, int offset) {
@@ -25,6 +26,9 @@ void printValue(Value value) {
     break;
   case VAL_NUMBER:
     printf("%g", AS_NUMBER(value));
+    break;
+  case VAL_OBJ:
+    printObject(value);
     break;
   }
 }

@@ -14,6 +14,7 @@ set (Headers
   src/constantPoolArray.h
   src/virtualMachine.h
   src/value.h
+  src/object.h
 src/scanner.h
 src/debug.h
 src/memory.h
@@ -26,6 +27,7 @@ set (Sources
   src/debug.c
   src/memory.c
   src/value.c
+  src/object.c
 src/scanner.c
 src/compiler.c
   src/virtualMachine.c

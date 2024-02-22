@@ -15,6 +15,7 @@ typedef struct {
   uint8_t *instructionPointer; // points to the next instruction to be executed
   Value *stackTop;             // points to the next empty slot in the stack
   Value stack[STACK_MAX];
+  Obj *objects;
 } VirtualMachine;
 
 typedef enum {
@@ -23,15 +24,15 @@ typedef enum {
   INTERPRET_RUNTIME_ERROR
 } InterpretResultCode;
 
-void push(VirtualMachine *virtualMachine, Value value);
-Value pop(VirtualMachine *virtualMachine);
-void initVirtualMachine(VirtualMachine *virtualMachine);
+extern VirtualMachine virtualMachine;
+void push(Value value);
+Value pop();
+void initVirtualMachine();
 
-void freeVirtualMachine(VirtualMachine *virtualMachine);
+void freeVirtualMachine();
 
-InterpretResultCode interpret(VirtualMachine *virtualMachine,
-                              const char *sourceCode);
+InterpretResultCode interpret(const char *sourceCode);
 
-InterpretResultCode run(VirtualMachine *virtualMachine);
+InterpretResultCode run();
 
 #endif // !c_virtualMachine_h

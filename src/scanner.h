@@ -1,12 +1,7 @@
 #ifndef c_scanner_h
 #define c_scanner_h
-typedef struct {
-  const char *start;   // beginning of current lexeme
-  const char *current; // current character
-  int line;
-} Scanner;
+
 typedef enum {
-  // Single-character tokens.
   TOKEN_LEFT_PAREN,
   TOKEN_RIGHT_PAREN,
   TOKEN_LEFT_BRACE,
@@ -18,7 +13,6 @@ typedef enum {
   TOKEN_SEMICOLON,
   TOKEN_SLASH,
   TOKEN_STAR,
-  // One or two character tokens.
   TOKEN_BANG,
   TOKEN_BANG_EQUAL,
   TOKEN_EQUAL,
@@ -27,11 +21,9 @@ typedef enum {
   TOKEN_GREATER_EQUAL,
   TOKEN_LESS,
   TOKEN_LESS_EQUAL,
-  // Literals.
   TOKEN_IDENTIFIER,
   TOKEN_STRING,
   TOKEN_NUMBER,
-  // Keywords.
   TOKEN_AND,
   TOKEN_CLASS,
   TOKEN_ELSE,
@@ -55,12 +47,12 @@ typedef enum {
 
 typedef struct {
   TokenType type;
-  const char *start; // pointer to the beginning of the lexeme
-  int length;        // lexeme length
+  const char *start;
+  int length;
   int line;
 } Token;
 
-Token scanToken(Scanner *scanner);
+void initScanner(const char *source);
+Token scanToken();
 
-void initScanner(Scanner *scanner, const char *sourceCode);
 #endif
