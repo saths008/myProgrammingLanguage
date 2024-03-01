@@ -15,7 +15,7 @@ typedef enum {
   PREC_CALL,       // . ()
   PREC_PRIMARY
 } Precedence;
-typedef void (*ParseFn)();
+typedef void (*ParseFn)(bool canAssign);
 
 typedef struct {
   ParseFn prefix;
@@ -37,7 +37,6 @@ bool compile(const char *sourceCode, BytecodeSeq *bytecodeSeq);
 static ParseRule *getRule(TokenType type);
 
 static void expression();
-static void literal();
 static void parsePrecedence(Precedence precedence);
 static void advanceToken();
 static void errorAtCurrent(const char *message);

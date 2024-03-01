@@ -15,6 +15,7 @@ set (Headers
   src/virtualMachine.h
   src/value.h
   src/object.h
+  src/hashTable.h
 src/scanner.h
 src/debug.h
 src/memory.h
@@ -30,6 +31,7 @@ set (Sources
   src/object.c
 src/scanner.c
 src/compiler.c
+  src/hashTable.c
   src/virtualMachine.c
   src/main.c)
 add_library(${This} STATIC ${Sources} ${Headers})

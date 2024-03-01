@@ -8,11 +8,11 @@
 #include "value.h"
 #include <stdarg.h>
 #include <string.h>
-
 VirtualMachine virtualMachine;
 static void resetStack() { virtualMachine.stackTop = virtualMachine.stack; }
 void freeVirtualMachine() {
   freeHashTable(&virtualMachine.strings);
+  freeHashTable(&virtualMachine.globals);
   freeObjects();
 }
 
@@ -20,6 +20,8 @@ void initVirtualMachine() {
   virtualMachine.bytecodeSeq = NULL;
   resetStack();
   virtualMachine.objects = NULL;
+  initHashTable(&virtualMachine.globals);
+
   initHashTable(&virtualMachine.strings);
 }
 void push(Value value) {
@@ -83,6 +85,8 @@ InterpretResultCode run() {
 #define READ_CONSTANT()                                                        \
   (virtualMachine.bytecodeSeq->constantPoolArray.values[READ_BYTE()])
 
+#define READ_STRING() AS_STRING(READ_CONSTANT())
+
 #define BINARY_OP(valueType, op)                                               \
   do {                                                                         \
     if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) {                          \
@@ -121,6 +125,31 @@ InterpretResultCode run() {
       BINARY_OP(BOOL_VAL, >);
       break;
     }
+    case OP_DEFINE_GLOBAL: {
+      ObjString *name = READ_STRING();
+      tableSet(&virtualMachine.globals, name, peek(0));
+      pop();
+      break;
+    }
+    case OP_POP: {
+      pop();
+      break;
+    }
+    case OP_GET_GLOBAL: {
+      ObjString *name = READ_STRING();
+      Value value;
+      if (!tableGet(&virtualMachine.globals, name, &value)) {
+        runtimeError("Undefined variable '%s'.", name->chars);
+        return INTERPRET_RUNTIME_ERROR;
+      }
+      push(value);
+      break;
+    }
+    case OP_PRINT: {
+      printValue(pop());
+      printf("\n");
+      break;
+    }
     case OP_LESS: {
       BINARY_OP(BOOL_VAL, <);
       break;
@@ -154,6 +183,15 @@ InterpretResultCode run() {
     case OP_NOT:
       push(BOOL_VAL(isFalsey(pop())));
       break;
+    case OP_SET_GLOBAL: {
+      ObjString *name = READ_STRING();
+      if (tableSet(&virtualMachine.globals, name, peek(0))) {
+        tableDelete(&virtualMachine.globals, name);
+        runtimeError("Undefined variable '%s'.", name->chars);
+        return INTERPRET_RUNTIME_ERROR;
+      }
+      break;
+    }
     case OP_EQUAL: {
       Value b = pop();
       Value a = pop();
@@ -189,5 +227,6 @@ InterpretResultCode run() {
 #undef BINARY_OP
 #undef READ_BYTE
 #undef READ_CONSTANT
+#undef READ_STRING
   }
 }
