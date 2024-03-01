@@ -2,6 +2,7 @@
 #include "bytecodeSeq.h"
 #include "compiler.h"
 #include "debug.h"
+#include "hashTable.h"
 #include "memory.h"
 #include "object.h"
 #include "value.h"
@@ -10,12 +11,16 @@
 
 VirtualMachine virtualMachine;
 static void resetStack() { virtualMachine.stackTop = virtualMachine.stack; }
-void freeVirtualMachine() { freeObjects(); }
+void freeVirtualMachine() {
+  freeHashTable(&virtualMachine.strings);
+  freeObjects();
+}
 
 void initVirtualMachine() {
   virtualMachine.bytecodeSeq = NULL;
   resetStack();
   virtualMachine.objects = NULL;
+  initHashTable(&virtualMachine.strings);
 }
 void push(Value value) {
   *virtualMachine.stackTop = value;

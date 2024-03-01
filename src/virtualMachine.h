@@ -3,6 +3,7 @@
 #include "bytecodeSeq.h"
 #include "common.h"
 #include "debug.h"
+#include "hashTable.h"
 #include <stdio.h>
 
 /**
@@ -15,6 +16,7 @@ typedef struct {
   uint8_t *instructionPointer; // points to the next instruction to be executed
   Value *stackTop;             // points to the next empty slot in the stack
   Value stack[STACK_MAX];
+  HashTable strings;
   Obj *objects;
 } VirtualMachine;
 
