@@ -39,6 +39,12 @@ void disassembleBytecodeSeq(BytecodeSeq *bytecodeSeq, const char *name) {
     offset = disassembleInstruction(bytecodeSeq, offset);
   }
 }
+static int byteInstruction(const char *name, BytecodeSeq *bytecodeSeq,
+                           int offset) {
+  uint8_t slot = bytecodeSeq->code[offset + 1];
+  printf("%-16s %4d\n", name, slot);
+  return offset + 2;
+}
 int disassembleInstruction(BytecodeSeq *bytecodeSeq, int offset) {
   printf("%04d ", offset);
   if (offset > 0 && bytecodeSeq->lineNumbers[offset] ==
@@ -53,6 +59,10 @@ int disassembleInstruction(BytecodeSeq *bytecodeSeq, int offset) {
     return simpleInstruction("OP_RETURN", offset);
   case OP_POP:
     return simpleInstruction("OP_POP", offset);
+  case OP_GET_LOCAL:
+    return byteInstruction("OP_GET_LOCAL", bytecodeSeq, offset);
+  case OP_SET_LOCAL:
+    return byteInstruction("OP_SET_LOCAL", bytecodeSeq, offset);
   case OP_GET_GLOBAL:
     return constantInstruction("OP_GET_GLOBAL", bytecodeSeq, offset);
   case OP_DEFINE_GLOBAL:
