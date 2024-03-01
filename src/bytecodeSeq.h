@@ -8,6 +8,7 @@
 typedef enum {
   OP_RETURN,
   OP_CONSTANT, // Load a constant from the constant pool with arg. of index
+  OP_JUMP,
   OP_NIL,
   OP_TRUE,
   OP_FALSE,
@@ -22,6 +23,8 @@ typedef enum {
   OP_LESS,
   OP_NEGATE,
   OP_PRINT,
+  OP_JUMP_IF_FALSE,
+  OP_LOOP,
   OP_ADD,
   OP_SUBTRACT,
   OP_MULTIPLY,

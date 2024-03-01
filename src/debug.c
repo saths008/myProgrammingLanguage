@@ -45,6 +45,13 @@ static int byteInstruction(const char *name, BytecodeSeq *bytecodeSeq,
   printf("%-16s %4d\n", name, slot);
   return offset + 2;
 }
+static int jumpInstruction(const char *name, int sign, BytecodeSeq *bytecodeSeq,
+                           int offset) {
+  uint16_t jump = (uint16_t)(bytecodeSeq->code[offset + 1] << 8);
+  jump |= bytecodeSeq->code[offset + 2];
+  printf("%-16s %4d -> %d\n", name, offset, offset + 3 + sign * jump);
+  return offset + 3;
+}
 int disassembleInstruction(BytecodeSeq *bytecodeSeq, int offset) {
   printf("%04d ", offset);
   if (offset > 0 && bytecodeSeq->lineNumbers[offset] ==
@@ -57,6 +64,12 @@ int disassembleInstruction(BytecodeSeq *bytecodeSeq, int offset) {
   switch (instruction) {
   case (OP_RETURN):
     return simpleInstruction("OP_RETURN", offset);
+  case OP_LOOP:
+    return jumpInstruction("OP_LOOP", -1, bytecodeSeq, offset);
+  case OP_JUMP:
+    return jumpInstruction("OP_JUMP", 1, chunk, offset);
+  case OP_JUMP_IF_FALSE:
+    return jumpInstruction("OP_JUMP_IF_FALSE", 1, chunk, offset);
   case OP_POP:
     return simpleInstruction("OP_POP", offset);
   case OP_GET_LOCAL:

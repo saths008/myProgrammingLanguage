@@ -84,7 +84,10 @@ InterpretResultCode run() {
 #define READ_BYTE() (*(virtualMachine.instructionPointer++))
 #define READ_CONSTANT()                                                        \
   (virtualMachine.bytecodeSeq->constantPoolArray.values[READ_BYTE()])
-
+#define READ_SHORT()                                                           \
+  (virtualMachine.instructionPointer += 2,                                     \
+   (uint16_t)((virtualMachine.instructionPointer[-2] << 8) |                   \
+              virtualMachine.instructionPointer[-1]))
 #define READ_STRING() AS_STRING(READ_CONSTANT())
 
 #define BINARY_OP(valueType, op)                                               \
@@ -120,6 +123,22 @@ InterpretResultCode run() {
       printValue(pop());
       printf("\n");
       return INTERPRET_OK;
+    }
+    case OP_LOOP: {
+      uint16_t offset = READ_SHORT();
+      virtualMachine.instructionPointer -= offset;
+      break;
+    }
+    case OP_JUMP: {
+      uint16_t offset = READ_SHORT();
+      virtualMachine.instructionPointer += offset;
+      break;
+    }
+    case OP_JUMP_IF_FALSE: {
+      uint16_t offset = READ_SHORT();
+      if (isFalsey(peek(0)))
+        virtualMachine.instructionPointer += offset;
+      break;
     }
     case OP_GREATER: {
       BINARY_OP(BOOL_VAL, >);
@@ -237,6 +256,7 @@ InterpretResultCode run() {
 #undef BINARY_OP
 #undef READ_BYTE
 #undef READ_CONSTANT
+#undef READ_SHORT
 #undef READ_STRING
   }
 }
