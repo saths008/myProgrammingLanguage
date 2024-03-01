@@ -107,7 +107,7 @@ static void emitReturn() { emitByte(OP_RETURN); }
 static uint8_t makeConstant(Value value) {
   int constant = addConstant(currentBytecodeSeq(), value);
   if (constant > UINT8_MAX) {
-    error("Too many constants in one chunk.");
+    error("Too many constants in one bytecodeSeq.");
     return 0;
   } else {
     return (uint8_t)constant;
