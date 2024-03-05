@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 typedef enum {
+  OP_CALL,
   OP_RETURN,
   OP_CONSTANT, // Load a constant from the constant pool with arg. of index
   OP_JUMP,

@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "hashTable.h"
 #include "memory.h"
 #include "object.h"
+#include "table.h"
 #include "value.h"
 #include "virtualMachine.h"
 
@@ -19,6 +19,20 @@ static Obj *allocateObject(size_t size, ObjType type) {
   return object;
 }
 
+ObjFunction *newFunction() {
+  ObjFunction *function = ALLOCATE_OBJ(ObjFunction, OBJ_FUNCTION);
+  function->arity = 0;
+  function->name = NULL;
+  initBytecodeSeq(&function->bytecodeSeq);
+  return function;
+}
+
+ObjNative *newNative(NativeFn function) {
+  ObjNative *native = ALLOCATE_OBJ(ObjNative, OBJ_NATIVE);
+  native->function = function;
+  return native;
+}
+
 static ObjString *allocateString(char *chars, int length, uint32_t hash) {
   ObjString *string = ALLOCATE_OBJ(ObjString, OBJ_STRING);
   string->length = length;
@@ -27,7 +41,7 @@ static ObjString *allocateString(char *chars, int length, uint32_t hash) {
   tableSet(&virtualMachine.strings, string, NIL_VAL);
   return string;
 }
-// Implementation of 'FNV-1a' hash algorithm
+
 static uint32_t hashString(const char *key, int length) {
   uint32_t hash = 2166136261u;
   for (int i = 0; i < length; i++) {
@@ -36,11 +50,14 @@ static uint32_t hashString(const char *key, int length) {
   }
   return hash;
 }
+
 ObjString *takeString(char *chars, int length) {
   uint32_t hash = hashString(chars, length);
   ObjString *interned =
       tableFindString(&virtualMachine.strings, chars, length, hash);
+
   if (interned != NULL) {
+    // Free the string just passed in.
     FREE_ARRAY(char, chars, length + 1);
     return interned;
   }
@@ -53,14 +70,29 @@ ObjString *copyString(const char *chars, int length) {
       tableFindString(&virtualMachine.strings, chars, length, hash);
   if (interned != NULL)
     return interned;
+
   char *heapChars = ALLOCATE(char, length + 1);
   memcpy(heapChars, chars, length);
   heapChars[length] = '\0';
   return allocateString(heapChars, length, hash);
 }
 
+static void printFunction(ObjFunction *function) {
+  if (function->name == NULL) {
+    printf("<script>");
+    return;
+  }
+  printf("<fn %s>", function->name->chars);
+}
+
 void printObject(Value value) {
   switch (OBJ_TYPE(value)) {
+  case OBJ_FUNCTION:
+    printFunction(AS_FUNCTION(value));
+    break;
+  case OBJ_NATIVE:
+    printf("<native fn>");
+    break;
   case OBJ_STRING:
     printf("%s", AS_CSTRING(value));
     break;

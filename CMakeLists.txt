@@ -18,6 +18,7 @@ set (Headers
   src/hashTable.h
 src/scanner.h
 src/debug.h
+src/table.h
 src/memory.h
 src/compiler.h
 )
@@ -28,6 +29,8 @@ set (Sources
   src/debug.c
   src/memory.c
   src/value.c
+src/table.c
+
   src/object.c
 src/scanner.c
 src/compiler.c

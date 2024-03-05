@@ -1,24 +1,27 @@
 #ifndef c_virtualMachine_h
 #define c_virtualMachine_h
-#include "bytecodeSeq.h"
-#include "common.h"
-#include "debug.h"
-#include "hashTable.h"
-#include <stdio.h>
 
-/**
- * @brief Virtual machine, takes in a bytecode sequence and executes it.
- *
- */
-#define STACK_MAX 256
+#include "object.h"
+#include "table.h"
+#include "value.h"
+
+#define FRAMES_MAX 256
+#define STACK_MAX (FRAMES_MAX * UINT8_COUNT)
+
 typedef struct {
-  BytecodeSeq *bytecodeSeq;
-  uint8_t *instructionPointer; // points to the next instruction to be executed
-  Value *stackTop;             // points to the next empty slot in the stack
-  Value stack[STACK_MAX];
-  HashTable globals;
+  ObjFunction *function;
+  uint8_t *ip;
+  Value *slots; //< Point to VM's value stack of the first slot a function uses.
+} CallFrame;
 
-  HashTable strings;
+typedef struct {
+  CallFrame frames[FRAMES_MAX];
+  int frameCount;
+
+  Value stack[STACK_MAX];
+  Value *stackTop;
+  Table globals;
+  Table strings;
   Obj *objects;
 } VirtualMachine;
 
@@ -26,17 +29,14 @@ typedef enum {
   INTERPRET_OK,
   INTERPRET_COMPILE_ERROR,
   INTERPRET_RUNTIME_ERROR
-} InterpretResultCode;
+} InterpretResult;
 
 extern VirtualMachine virtualMachine;
+
+void initVirtualMachine();
+void freeVirtualMachine();
+InterpretResult interpret(const char *source);
 void push(Value value);
 Value pop();
-void initVirtualMachine();
 
-void freeVirtualMachine();
-
-InterpretResultCode interpret(const char *sourceCode);
-
-InterpretResultCode run();
-
-#endif // !c_virtualMachine_h
+#endif

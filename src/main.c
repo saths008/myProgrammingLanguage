@@ -48,7 +48,7 @@ static void runFile(const char *path) {
   char *source = readFile(path);
   printf("File read, interpreting...");
 
-  InterpretResultCode result = interpret(source);
+  InterpretResult result = interpret(source);
   printf("Interpreted file...");
 
   free(source);
