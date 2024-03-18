@@ -1,0 +1,12 @@
+fun while_fn(n) {
+  while (n != 1){
+  n = n-1;
+  print "Hello";
+
+}
+
+}
+
+
+while_fn(5);
+

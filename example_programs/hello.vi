@@ -1,0 +1,8 @@
+fun hello(n) {
+
+var welcomeMessage = "Hello " + n;
+print welcomeMessage;
+}
+
+
+hello("Saath");

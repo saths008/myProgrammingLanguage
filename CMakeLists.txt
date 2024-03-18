@@ -54,4 +54,3 @@ add_custom_target(memLeak
 add_custom_target(debug
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${This}_App --config Debug
 )
-
