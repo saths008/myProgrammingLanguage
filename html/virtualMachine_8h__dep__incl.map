@@ -1,9 +1,0 @@
-<map id="src/virtualMachine.h" name="src/virtualMachine.h">
-<area shape="rect" id="node1" title=" " alt="" coords="223,5,377,32"/>
-<area shape="rect" id="node2" href="$compiler_8h.html" title=" " alt="" coords="66,80,179,107"/>
-<area shape="rect" id="node4" href="$virtualMachine_8c.html" title=" " alt="" coords="141,155,294,181"/>
-<area shape="rect" id="node5" href="$main_8c.html" title=" " alt="" coords="255,80,345,107"/>
-<area shape="rect" id="node6" href="$memory_8c.html" title=" " alt="" coords="369,80,479,107"/>
-<area shape="rect" id="node7" href="$object_8c.html" title=" " alt="" coords="503,80,599,107"/>
-<area shape="rect" id="node3" href="$compiler_8c.html" title=" " alt="" coords="5,155,117,181"/>
-</map>

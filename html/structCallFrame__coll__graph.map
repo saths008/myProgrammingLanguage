@@ -1,9 +1,0 @@
-<map id="CallFrame" name="CallFrame">
-<area shape="rect" id="node1" title=" " alt="" coords="5,464,93,491"/>
-<area shape="rect" id="node2" href="$structValue.html" title=" " alt="" coords="108,95,167,121"/>
-<area shape="rect" id="node7" href="$structConstantPoolArray.html" title=" " alt="" coords="66,196,209,223"/>
-<area shape="rect" id="node3" href="$structObj.html" title=" " alt="" coords="235,5,279,32"/>
-<area shape="rect" id="node4" href="$structObjFunction.html" title=" " alt="" coords="153,375,252,401"/>
-<area shape="rect" id="node5" href="$structObjString.html" title=" " alt="" coords="277,145,360,172"/>
-<area shape="rect" id="node6" href="$structBytecodeSeq.html" title=" " alt="" coords="91,285,197,312"/>
-</map>
