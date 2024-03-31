@@ -1,0 +1,190 @@
+\hypertarget{value_8h}{}\doxysection{src/value.h File Reference}
+\label{value_8h}\index{src/value.h@{src/value.h}}
+{\ttfamily \#include \char`\"{}common.\+h\char`\"{}}\newline
+Include dependency graph for value.\+h\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=288pt]{value_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{value_8h__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structValue}{Value}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{value_8h_a4da06c994a3591d379aca99d26b7e7f5}{IS\+\_\+\+OBJ}}(value)~((value).type == \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a01982aa56ac573db6831d13db32cafbf}{VAL\+\_\+\+OBJ}})
+\item 
+\#define \mbox{\hyperlink{value_8h_ae834650cc20489e3a20ebfca0d2a61bf}{AS\+\_\+\+OBJ}}(value)~((value).as.\+obj)
+\item 
+\#define \mbox{\hyperlink{value_8h_af9b6f0def2520f8664f268519acf7951}{OBJ\+\_\+\+VAL}}(object)~((\mbox{\hyperlink{structValue}{Value}})\{\mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a01982aa56ac573db6831d13db32cafbf}{VAL\+\_\+\+OBJ}}, \{.obj = (\mbox{\hyperlink{structObj}{Obj}} $\ast$)object\}\})
+\item 
+\#define \mbox{\hyperlink{value_8h_a4d746ae2af08455daf3aaee99192c0d5}{BOOL\+\_\+\+VAL}}(value)~((\mbox{\hyperlink{structValue}{Value}})\{\mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a0f0f6f8ec1389872c13b69a7ee1cb1b0}{VAL\+\_\+\+BOOL}}, \{.boolean = value\}\})
+\item 
+\#define \mbox{\hyperlink{value_8h_a8c816fb84c7d4c79cf0e8f0bf1fb981e}{NIL\+\_\+\+VAL}}~((\mbox{\hyperlink{structValue}{Value}})\{\mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1ac853239f568bd51a89f8523bc112abee}{VAL\+\_\+\+NIL}}, \{.\mbox{\hyperlink{scanner_8c_a8b5922346c177100f2bc88bd0bac015e}{number}} = 0\}\})
+\item 
+\#define \mbox{\hyperlink{value_8h_acca47ec80dce7e412502ceb7a201d240}{NUMBER\+\_\+\+VAL}}(value)~((\mbox{\hyperlink{structValue}{Value}})\{\mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a92c4e89ee247ed0b07e8920bbba1a718}{VAL\+\_\+\+NUMBER}}, \{.\mbox{\hyperlink{scanner_8c_a8b5922346c177100f2bc88bd0bac015e}{number}} = value\}\})
+\item 
+\#define \mbox{\hyperlink{value_8h_a5c8cd5d10fe3d7bd896d207905eb6f5a}{AS\+\_\+\+BOOL}}(value)~((value).as.\+boolean)
+\item 
+\#define \mbox{\hyperlink{value_8h_a5134d9dbb50a079107222dba8a6e98b7}{AS\+\_\+\+NUMBER}}(value)~((value).\mbox{\hyperlink{scanner_8c_a8b5922346c177100f2bc88bd0bac015e}{as.\+number}})
+\item 
+\#define \mbox{\hyperlink{value_8h_a9ac2b4c4d3ba7fb5569dbe0458c3fed3}{IS\+\_\+\+BOOL}}(value)~((value).type == \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a0f0f6f8ec1389872c13b69a7ee1cb1b0}{VAL\+\_\+\+BOOL}})
+\item 
+\#define \mbox{\hyperlink{value_8h_afb576a1cd4ff8ae10dce52219bcaf458}{IS\+\_\+\+NIL}}(value)~((value).type == \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1ac853239f568bd51a89f8523bc112abee}{VAL\+\_\+\+NIL}})
+\item 
+\#define \mbox{\hyperlink{value_8h_a0257646ec057f253c1dd2da75aad53e3}{IS\+\_\+\+NUMBER}}(value)~((value).type == \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a92c4e89ee247ed0b07e8920bbba1a718}{VAL\+\_\+\+NUMBER}})
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{structObj}{Obj}} \mbox{\hyperlink{value_8h_aff243646b37d6ed5dc8f100186fee278}{Obj}}
+\item 
+typedef struct \mbox{\hyperlink{structObjString}{Obj\+String}} \mbox{\hyperlink{value_8h_a965c744818a6d6fe881812c7ef6a26c9}{Obj\+String}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1}{Value\+Type}} \{ \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1ac853239f568bd51a89f8523bc112abee}{VAL\+\_\+\+NIL}}
+, \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a0f0f6f8ec1389872c13b69a7ee1cb1b0}{VAL\+\_\+\+BOOL}}
+, \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a01982aa56ac573db6831d13db32cafbf}{VAL\+\_\+\+OBJ}}
+, \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a92c4e89ee247ed0b07e8920bbba1a718}{VAL\+\_\+\+NUMBER}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{value_8h_a43e6f5fd4daa9c682a5e4936fbe675eb}{values\+Equal}} (\mbox{\hyperlink{structValue}{Value}} a, \mbox{\hyperlink{structValue}{Value}} b)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{value_8h_a5c8cd5d10fe3d7bd896d207905eb6f5a}\label{value_8h_a5c8cd5d10fe3d7bd896d207905eb6f5a}} 
+\index{value.h@{value.h}!AS\_BOOL@{AS\_BOOL}}
+\index{AS\_BOOL@{AS\_BOOL}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{AS\_BOOL}{AS\_BOOL}}
+{\footnotesize\ttfamily \#define AS\+\_\+\+BOOL(\begin{DoxyParamCaption}\item[{}]{value }\end{DoxyParamCaption})~((value).as.\+boolean)}
+
+\mbox{\Hypertarget{value_8h_a5134d9dbb50a079107222dba8a6e98b7}\label{value_8h_a5134d9dbb50a079107222dba8a6e98b7}} 
+\index{value.h@{value.h}!AS\_NUMBER@{AS\_NUMBER}}
+\index{AS\_NUMBER@{AS\_NUMBER}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{AS\_NUMBER}{AS\_NUMBER}}
+{\footnotesize\ttfamily \#define AS\+\_\+\+NUMBER(\begin{DoxyParamCaption}\item[{}]{value }\end{DoxyParamCaption})~((value).\mbox{\hyperlink{scanner_8c_a8b5922346c177100f2bc88bd0bac015e}{as.\+number}})}
+
+\mbox{\Hypertarget{value_8h_ae834650cc20489e3a20ebfca0d2a61bf}\label{value_8h_ae834650cc20489e3a20ebfca0d2a61bf}} 
+\index{value.h@{value.h}!AS\_OBJ@{AS\_OBJ}}
+\index{AS\_OBJ@{AS\_OBJ}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{AS\_OBJ}{AS\_OBJ}}
+{\footnotesize\ttfamily \#define AS\+\_\+\+OBJ(\begin{DoxyParamCaption}\item[{}]{value }\end{DoxyParamCaption})~((value).as.\+obj)}
+
+\mbox{\Hypertarget{value_8h_a4d746ae2af08455daf3aaee99192c0d5}\label{value_8h_a4d746ae2af08455daf3aaee99192c0d5}} 
+\index{value.h@{value.h}!BOOL\_VAL@{BOOL\_VAL}}
+\index{BOOL\_VAL@{BOOL\_VAL}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{BOOL\_VAL}{BOOL\_VAL}}
+{\footnotesize\ttfamily \#define BOOL\+\_\+\+VAL(\begin{DoxyParamCaption}\item[{}]{value }\end{DoxyParamCaption})~((\mbox{\hyperlink{structValue}{Value}})\{\mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a0f0f6f8ec1389872c13b69a7ee1cb1b0}{VAL\+\_\+\+BOOL}}, \{.boolean = value\}\})}
+
+\mbox{\Hypertarget{value_8h_a9ac2b4c4d3ba7fb5569dbe0458c3fed3}\label{value_8h_a9ac2b4c4d3ba7fb5569dbe0458c3fed3}} 
+\index{value.h@{value.h}!IS\_BOOL@{IS\_BOOL}}
+\index{IS\_BOOL@{IS\_BOOL}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{IS\_BOOL}{IS\_BOOL}}
+{\footnotesize\ttfamily \#define IS\+\_\+\+BOOL(\begin{DoxyParamCaption}\item[{}]{value }\end{DoxyParamCaption})~((value).type == \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a0f0f6f8ec1389872c13b69a7ee1cb1b0}{VAL\+\_\+\+BOOL}})}
+
+\mbox{\Hypertarget{value_8h_afb576a1cd4ff8ae10dce52219bcaf458}\label{value_8h_afb576a1cd4ff8ae10dce52219bcaf458}} 
+\index{value.h@{value.h}!IS\_NIL@{IS\_NIL}}
+\index{IS\_NIL@{IS\_NIL}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{IS\_NIL}{IS\_NIL}}
+{\footnotesize\ttfamily \#define IS\+\_\+\+NIL(\begin{DoxyParamCaption}\item[{}]{value }\end{DoxyParamCaption})~((value).type == \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1ac853239f568bd51a89f8523bc112abee}{VAL\+\_\+\+NIL}})}
+
+\mbox{\Hypertarget{value_8h_a0257646ec057f253c1dd2da75aad53e3}\label{value_8h_a0257646ec057f253c1dd2da75aad53e3}} 
+\index{value.h@{value.h}!IS\_NUMBER@{IS\_NUMBER}}
+\index{IS\_NUMBER@{IS\_NUMBER}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{IS\_NUMBER}{IS\_NUMBER}}
+{\footnotesize\ttfamily \#define IS\+\_\+\+NUMBER(\begin{DoxyParamCaption}\item[{}]{value }\end{DoxyParamCaption})~((value).type == \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a92c4e89ee247ed0b07e8920bbba1a718}{VAL\+\_\+\+NUMBER}})}
+
+\mbox{\Hypertarget{value_8h_a4da06c994a3591d379aca99d26b7e7f5}\label{value_8h_a4da06c994a3591d379aca99d26b7e7f5}} 
+\index{value.h@{value.h}!IS\_OBJ@{IS\_OBJ}}
+\index{IS\_OBJ@{IS\_OBJ}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{IS\_OBJ}{IS\_OBJ}}
+{\footnotesize\ttfamily \#define IS\+\_\+\+OBJ(\begin{DoxyParamCaption}\item[{}]{value }\end{DoxyParamCaption})~((value).type == \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a01982aa56ac573db6831d13db32cafbf}{VAL\+\_\+\+OBJ}})}
+
+\mbox{\Hypertarget{value_8h_a8c816fb84c7d4c79cf0e8f0bf1fb981e}\label{value_8h_a8c816fb84c7d4c79cf0e8f0bf1fb981e}} 
+\index{value.h@{value.h}!NIL\_VAL@{NIL\_VAL}}
+\index{NIL\_VAL@{NIL\_VAL}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{NIL\_VAL}{NIL\_VAL}}
+{\footnotesize\ttfamily \#define NIL\+\_\+\+VAL~((\mbox{\hyperlink{structValue}{Value}})\{\mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1ac853239f568bd51a89f8523bc112abee}{VAL\+\_\+\+NIL}}, \{.\mbox{\hyperlink{scanner_8c_a8b5922346c177100f2bc88bd0bac015e}{number}} = 0\}\})}
+
+\mbox{\Hypertarget{value_8h_acca47ec80dce7e412502ceb7a201d240}\label{value_8h_acca47ec80dce7e412502ceb7a201d240}} 
+\index{value.h@{value.h}!NUMBER\_VAL@{NUMBER\_VAL}}
+\index{NUMBER\_VAL@{NUMBER\_VAL}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{NUMBER\_VAL}{NUMBER\_VAL}}
+{\footnotesize\ttfamily \#define NUMBER\+\_\+\+VAL(\begin{DoxyParamCaption}\item[{}]{value }\end{DoxyParamCaption})~((\mbox{\hyperlink{structValue}{Value}})\{\mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a92c4e89ee247ed0b07e8920bbba1a718}{VAL\+\_\+\+NUMBER}}, \{.\mbox{\hyperlink{scanner_8c_a8b5922346c177100f2bc88bd0bac015e}{number}} = value\}\})}
+
+\mbox{\Hypertarget{value_8h_af9b6f0def2520f8664f268519acf7951}\label{value_8h_af9b6f0def2520f8664f268519acf7951}} 
+\index{value.h@{value.h}!OBJ\_VAL@{OBJ\_VAL}}
+\index{OBJ\_VAL@{OBJ\_VAL}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{OBJ\_VAL}{OBJ\_VAL}}
+{\footnotesize\ttfamily \#define OBJ\+\_\+\+VAL(\begin{DoxyParamCaption}\item[{}]{object }\end{DoxyParamCaption})~((\mbox{\hyperlink{structValue}{Value}})\{\mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a01982aa56ac573db6831d13db32cafbf}{VAL\+\_\+\+OBJ}}, \{.obj = (\mbox{\hyperlink{structObj}{Obj}} $\ast$)object\}\})}
+
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{value_8h_aff243646b37d6ed5dc8f100186fee278}\label{value_8h_aff243646b37d6ed5dc8f100186fee278}} 
+\index{value.h@{value.h}!Obj@{Obj}}
+\index{Obj@{Obj}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{Obj}{Obj}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structObj}{Obj}} \mbox{\hyperlink{structObj}{Obj}}}
+
+\mbox{\Hypertarget{value_8h_a965c744818a6d6fe881812c7ef6a26c9}\label{value_8h_a965c744818a6d6fe881812c7ef6a26c9}} 
+\index{value.h@{value.h}!ObjString@{ObjString}}
+\index{ObjString@{ObjString}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{ObjString}{ObjString}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structObjString}{Obj\+String}} \mbox{\hyperlink{structObjString}{Obj\+String}}}
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1}\label{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1}} 
+\index{value.h@{value.h}!ValueType@{ValueType}}
+\index{ValueType@{ValueType}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{ValueType}{ValueType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1}{Value\+Type}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{VAL\_NIL@{VAL\_NIL}!value.h@{value.h}}\index{value.h@{value.h}!VAL\_NIL@{VAL\_NIL}}}\mbox{\Hypertarget{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1ac853239f568bd51a89f8523bc112abee}\label{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1ac853239f568bd51a89f8523bc112abee}} 
+VAL\+\_\+\+NIL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{VAL\_BOOL@{VAL\_BOOL}!value.h@{value.h}}\index{value.h@{value.h}!VAL\_BOOL@{VAL\_BOOL}}}\mbox{\Hypertarget{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a0f0f6f8ec1389872c13b69a7ee1cb1b0}\label{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a0f0f6f8ec1389872c13b69a7ee1cb1b0}} 
+VAL\+\_\+\+BOOL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{VAL\_OBJ@{VAL\_OBJ}!value.h@{value.h}}\index{value.h@{value.h}!VAL\_OBJ@{VAL\_OBJ}}}\mbox{\Hypertarget{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a01982aa56ac573db6831d13db32cafbf}\label{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a01982aa56ac573db6831d13db32cafbf}} 
+VAL\+\_\+\+OBJ&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{VAL\_NUMBER@{VAL\_NUMBER}!value.h@{value.h}}\index{value.h@{value.h}!VAL\_NUMBER@{VAL\_NUMBER}}}\mbox{\Hypertarget{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a92c4e89ee247ed0b07e8920bbba1a718}\label{value_8h_ad9971b6ef33e02ba2c75d19c1d2518a1a92c4e89ee247ed0b07e8920bbba1a718}} 
+VAL\+\_\+\+NUMBER&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{value_8h_a43e6f5fd4daa9c682a5e4936fbe675eb}\label{value_8h_a43e6f5fd4daa9c682a5e4936fbe675eb}} 
+\index{value.h@{value.h}!valuesEqual@{valuesEqual}}
+\index{valuesEqual@{valuesEqual}!value.h@{value.h}}
+\doxysubsubsection{\texorpdfstring{valuesEqual()}{valuesEqual()}}
+{\footnotesize\ttfamily bool values\+Equal (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structValue}{Value}}}]{a,  }\item[{\mbox{\hyperlink{structValue}{Value}}}]{b }\end{DoxyParamCaption})}
+

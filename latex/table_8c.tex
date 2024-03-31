@@ -1,0 +1,156 @@
+\hypertarget{table_8c}{}\doxysection{src/table.c File Reference}
+\label{table_8c}\index{src/table.c@{src/table.c}}
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}memory.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}object.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}table.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}value.\+h\char`\"{}}\newline
+Include dependency graph for table.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{table_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{table_8c_ab6357f56edb0f10d74092689b680be3b}{TABLE\+\_\+\+MAX\+\_\+\+LOAD}}~0.\+75
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{table_8c_a0221915e9a7efd064123f1c32fd8da05}{init\+Table}} (\mbox{\hyperlink{structTable}{Table}} $\ast$table)
+\item 
+void \mbox{\hyperlink{table_8c_ada5e8f33b728748fafc2aa534ba307b5}{free\+Table}} (\mbox{\hyperlink{structTable}{Table}} $\ast$table)
+\item 
+static \mbox{\hyperlink{structEntry}{Entry}} $\ast$ \mbox{\hyperlink{table_8c_a3a4dbd79aca1cf08fa1d26d20691fe9f}{find\+Entry}} (\mbox{\hyperlink{structEntry}{Entry}} $\ast$entries, int capacity, \mbox{\hyperlink{structObjString}{Obj\+String}} $\ast$key)
+\item 
+bool \mbox{\hyperlink{table_8c_ad27572e9042e644668254e6360db7a1d}{table\+Get}} (\mbox{\hyperlink{structTable}{Table}} $\ast$table, \mbox{\hyperlink{structObjString}{Obj\+String}} $\ast$key, \mbox{\hyperlink{structValue}{Value}} $\ast$value)
+\item 
+static void \mbox{\hyperlink{table_8c_ab228ef8d5058abc821148014c92a9ad9}{adjust\+Capacity}} (\mbox{\hyperlink{structTable}{Table}} $\ast$table, int capacity)
+\item 
+bool \mbox{\hyperlink{table_8c_a0159c87e6afdb9b5a3bbd7be2defd7da}{table\+Set}} (\mbox{\hyperlink{structTable}{Table}} $\ast$table, \mbox{\hyperlink{structObjString}{Obj\+String}} $\ast$key, \mbox{\hyperlink{structValue}{Value}} value)
+\item 
+bool \mbox{\hyperlink{table_8c_a7f2197f96a56a19b3077a5773ec1a37e}{table\+Delete}} (\mbox{\hyperlink{structTable}{Table}} $\ast$table, \mbox{\hyperlink{structObjString}{Obj\+String}} $\ast$key)
+\item 
+void \mbox{\hyperlink{table_8c_a4ee6695dde0927e5696bffa71ac38693}{table\+Add\+All}} (\mbox{\hyperlink{structTable}{Table}} $\ast$from, \mbox{\hyperlink{structTable}{Table}} $\ast$to)
+\item 
+\mbox{\hyperlink{structObjString}{Obj\+String}} $\ast$ \mbox{\hyperlink{table_8c_a5b80291526e65d9f9566f52fcb9e7377}{table\+Find\+String}} (\mbox{\hyperlink{structTable}{Table}} $\ast$table, const char $\ast$chars, int length, uint32\+\_\+t hash)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{table_8c_ab6357f56edb0f10d74092689b680be3b}\label{table_8c_ab6357f56edb0f10d74092689b680be3b}} 
+\index{table.c@{table.c}!TABLE\_MAX\_LOAD@{TABLE\_MAX\_LOAD}}
+\index{TABLE\_MAX\_LOAD@{TABLE\_MAX\_LOAD}!table.c@{table.c}}
+\doxysubsubsection{\texorpdfstring{TABLE\_MAX\_LOAD}{TABLE\_MAX\_LOAD}}
+{\footnotesize\ttfamily \#define TABLE\+\_\+\+MAX\+\_\+\+LOAD~0.\+75}
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{table_8c_ab228ef8d5058abc821148014c92a9ad9}\label{table_8c_ab228ef8d5058abc821148014c92a9ad9}} 
+\index{table.c@{table.c}!adjustCapacity@{adjustCapacity}}
+\index{adjustCapacity@{adjustCapacity}!table.c@{table.c}}
+\doxysubsubsection{\texorpdfstring{adjustCapacity()}{adjustCapacity()}}
+{\footnotesize\ttfamily static void adjust\+Capacity (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTable}{Table}} $\ast$}]{table,  }\item[{int}]{capacity }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=265pt]{table_8c_ab228ef8d5058abc821148014c92a9ad9_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{table_8c_a3a4dbd79aca1cf08fa1d26d20691fe9f}\label{table_8c_a3a4dbd79aca1cf08fa1d26d20691fe9f}} 
+\index{table.c@{table.c}!findEntry@{findEntry}}
+\index{findEntry@{findEntry}!table.c@{table.c}}
+\doxysubsubsection{\texorpdfstring{findEntry()}{findEntry()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{structEntry}{Entry}}$\ast$ find\+Entry (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structEntry}{Entry}} $\ast$}]{entries,  }\item[{int}]{capacity,  }\item[{\mbox{\hyperlink{structObjString}{Obj\+String}} $\ast$}]{key }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{table_8c_ada5e8f33b728748fafc2aa534ba307b5}\label{table_8c_ada5e8f33b728748fafc2aa534ba307b5}} 
+\index{table.c@{table.c}!freeTable@{freeTable}}
+\index{freeTable@{freeTable}!table.c@{table.c}}
+\doxysubsubsection{\texorpdfstring{freeTable()}{freeTable()}}
+{\footnotesize\ttfamily void free\+Table (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTable}{Table}} $\ast$}]{table }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=236pt]{table_8c_ada5e8f33b728748fafc2aa534ba307b5_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{table_8c_a0221915e9a7efd064123f1c32fd8da05}\label{table_8c_a0221915e9a7efd064123f1c32fd8da05}} 
+\index{table.c@{table.c}!initTable@{initTable}}
+\index{initTable@{initTable}!table.c@{table.c}}
+\doxysubsubsection{\texorpdfstring{initTable()}{initTable()}}
+{\footnotesize\ttfamily void init\+Table (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTable}{Table}} $\ast$}]{table }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{table_8c_a4ee6695dde0927e5696bffa71ac38693}\label{table_8c_a4ee6695dde0927e5696bffa71ac38693}} 
+\index{table.c@{table.c}!tableAddAll@{tableAddAll}}
+\index{tableAddAll@{tableAddAll}!table.c@{table.c}}
+\doxysubsubsection{\texorpdfstring{tableAddAll()}{tableAddAll()}}
+{\footnotesize\ttfamily void table\+Add\+All (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTable}{Table}} $\ast$}]{from,  }\item[{\mbox{\hyperlink{structTable}{Table}} $\ast$}]{to }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{table_8c_a4ee6695dde0927e5696bffa71ac38693_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{table_8c_a7f2197f96a56a19b3077a5773ec1a37e}\label{table_8c_a7f2197f96a56a19b3077a5773ec1a37e}} 
+\index{table.c@{table.c}!tableDelete@{tableDelete}}
+\index{tableDelete@{tableDelete}!table.c@{table.c}}
+\doxysubsubsection{\texorpdfstring{tableDelete()}{tableDelete()}}
+{\footnotesize\ttfamily bool table\+Delete (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTable}{Table}} $\ast$}]{table,  }\item[{\mbox{\hyperlink{structObjString}{Obj\+String}} $\ast$}]{key }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=250pt]{table_8c_a7f2197f96a56a19b3077a5773ec1a37e_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{table_8c_a5b80291526e65d9f9566f52fcb9e7377}\label{table_8c_a5b80291526e65d9f9566f52fcb9e7377}} 
+\index{table.c@{table.c}!tableFindString@{tableFindString}}
+\index{tableFindString@{tableFindString}!table.c@{table.c}}
+\doxysubsubsection{\texorpdfstring{tableFindString()}{tableFindString()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structObjString}{Obj\+String}}$\ast$ table\+Find\+String (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTable}{Table}} $\ast$}]{table,  }\item[{const char $\ast$}]{chars,  }\item[{int}]{length,  }\item[{uint32\+\_\+t}]{hash }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{table_8c_ad27572e9042e644668254e6360db7a1d}\label{table_8c_ad27572e9042e644668254e6360db7a1d}} 
+\index{table.c@{table.c}!tableGet@{tableGet}}
+\index{tableGet@{tableGet}!table.c@{table.c}}
+\doxysubsubsection{\texorpdfstring{tableGet()}{tableGet()}}
+{\footnotesize\ttfamily bool table\+Get (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTable}{Table}} $\ast$}]{table,  }\item[{\mbox{\hyperlink{structObjString}{Obj\+String}} $\ast$}]{key,  }\item[{\mbox{\hyperlink{structValue}{Value}} $\ast$}]{value }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=235pt]{table_8c_ad27572e9042e644668254e6360db7a1d_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{table_8c_a0159c87e6afdb9b5a3bbd7be2defd7da}\label{table_8c_a0159c87e6afdb9b5a3bbd7be2defd7da}} 
+\index{table.c@{table.c}!tableSet@{tableSet}}
+\index{tableSet@{tableSet}!table.c@{table.c}}
+\doxysubsubsection{\texorpdfstring{tableSet()}{tableSet()}}
+{\footnotesize\ttfamily bool table\+Set (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structTable}{Table}} $\ast$}]{table,  }\item[{\mbox{\hyperlink{structObjString}{Obj\+String}} $\ast$}]{key,  }\item[{\mbox{\hyperlink{structValue}{Value}}}]{value }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{table_8c_a0159c87e6afdb9b5a3bbd7be2defd7da_cgraph}
+\end{center}
+\end{figure}

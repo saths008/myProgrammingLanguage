@@ -1,0 +1,64 @@
+\hypertarget{memory_8c}{}\doxysection{src/memory.c File Reference}
+\label{memory_8c}\index{src/memory.c@{src/memory.c}}
+{\ttfamily \#include \char`\"{}memory.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}bytecode\+Seq.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}common.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}object.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}stdio.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}stdlib.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}value.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}virtual\+Machine.\+h\char`\"{}}\newline
+Include dependency graph for memory.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{memory_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void $\ast$ \mbox{\hyperlink{memory_8c_a013d1424390131ba996596cd20c70ce2}{reallocate}} (void $\ast$pointer, size\+\_\+t old\+Size, size\+\_\+t new\+Size)
+\item 
+static void \mbox{\hyperlink{memory_8c_a9ae2f2cc092545d1ec7798b1cf85f9f6}{free\+Object}} (\mbox{\hyperlink{structObj}{Obj}} $\ast$object)
+\item 
+void \mbox{\hyperlink{memory_8c_aef3401de87ba3854c8c16ec2f6c79b2b}{free\+Objects}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{memory_8c_a9ae2f2cc092545d1ec7798b1cf85f9f6}\label{memory_8c_a9ae2f2cc092545d1ec7798b1cf85f9f6}} 
+\index{memory.c@{memory.c}!freeObject@{freeObject}}
+\index{freeObject@{freeObject}!memory.c@{memory.c}}
+\doxysubsubsection{\texorpdfstring{freeObject()}{freeObject()}}
+{\footnotesize\ttfamily static void free\+Object (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structObj}{Obj}} $\ast$}]{object }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{memory_8c_a9ae2f2cc092545d1ec7798b1cf85f9f6_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{memory_8c_aef3401de87ba3854c8c16ec2f6c79b2b}\label{memory_8c_aef3401de87ba3854c8c16ec2f6c79b2b}} 
+\index{memory.c@{memory.c}!freeObjects@{freeObjects}}
+\index{freeObjects@{freeObjects}!memory.c@{memory.c}}
+\doxysubsubsection{\texorpdfstring{freeObjects()}{freeObjects()}}
+{\footnotesize\ttfamily void free\+Objects (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{memory_8c_aef3401de87ba3854c8c16ec2f6c79b2b_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{memory_8c_a013d1424390131ba996596cd20c70ce2}\label{memory_8c_a013d1424390131ba996596cd20c70ce2}} 
+\index{memory.c@{memory.c}!reallocate@{reallocate}}
+\index{reallocate@{reallocate}!memory.c@{memory.c}}
+\doxysubsubsection{\texorpdfstring{reallocate()}{reallocate()}}
+{\footnotesize\ttfamily void$\ast$ reallocate (\begin{DoxyParamCaption}\item[{void $\ast$}]{pointer,  }\item[{size\+\_\+t}]{old\+Size,  }\item[{size\+\_\+t}]{new\+Size }\end{DoxyParamCaption})}
+

@@ -43,12 +43,12 @@ static char *readFile(const char *path) {
 }
 
 static void runFile(const char *path) {
-  printf("Reading file...");
+  // printf("Reading file...");
   char *source = readFile(path);
-  printf("File read, interpreting...");
+  // printf("File read, interpreting...");
 
   InterpretResult result = interpret(source);
-  printf("Interpreted file...");
+  // printf("Interpreted file...");
 
   free(source);
 
@@ -60,7 +60,7 @@ static void runFile(const char *path) {
 
 int main(int argc, const char *argv[]) {
   initVirtualMachine();
-  printf("Virtual machine initialized");
+  // printf("Virtual machine initialized");
 
   if (argc == 1) {
     printf("In repl");

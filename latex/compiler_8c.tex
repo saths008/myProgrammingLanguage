@@ -1,0 +1,1045 @@
+\hypertarget{compiler_8c}{}\doxysection{src/compiler.c File Reference}
+\label{compiler_8c}\index{src/compiler.c@{src/compiler.c}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}bytecode\+Seq.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}common.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}compiler.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}scanner.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}debug.\+h\char`\"{}}\newline
+Include dependency graph for compiler.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structParser}{Parser}}
+\item 
+struct \mbox{\hyperlink{structParseRule}{Parse\+Rule}}
+\item 
+struct \mbox{\hyperlink{structLocal}{Local}}
+\item 
+struct \mbox{\hyperlink{structCompiler}{Compiler}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef void($\ast$ \mbox{\hyperlink{compiler_8c_ac1c6f24ed3208486ef313366b0c0f63f}{Parse\+Fn}}) (bool can\+Assign)
+\item 
+typedef struct \mbox{\hyperlink{structCompiler}{Compiler}} \mbox{\hyperlink{compiler_8c_a59d46fe4edc33c8cc818e3aced56de29}{Compiler}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006}{Precedence}} \{ \newline
+\mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a2be887a6eb50f60bf0d6643d5986289c}{PREC\+\_\+\+NONE}}
+, \mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a5576e7223ab7e815dc3f0daefcaf5fe3}{PREC\+\_\+\+ASSIGNMENT}}
+, \mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a461532d1f6f71dc9a5f506644cdad7e5}{PREC\+\_\+\+OR}}
+, \mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006afd1def1a9d1ac4d3e573e407227c8f56}{PREC\+\_\+\+AND}}
+, \newline
+\mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a336bf98f3bbc6c9ec4436e7728ca9389}{PREC\+\_\+\+EQUALITY}}
+, \mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a97393227c3b9b3664833fb648de3c8af}{PREC\+\_\+\+COMPARISON}}
+, \mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006af8854b546d1ca4c09e1f8684a3cd6af3}{PREC\+\_\+\+TERM}}
+, \mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a512d339d43a8a07254dc51ae5cbf61de}{PREC\+\_\+\+FACTOR}}
+, \newline
+\mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a0f109c9eef878893165c6180c86caa96}{PREC\+\_\+\+UNARY}}
+, \mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a935e24750e9ae953c5291c5567be873a}{PREC\+\_\+\+CALL}}
+, \mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a59b5adac5b20fde37b2be48df04b90de}{PREC\+\_\+\+PRIMARY}}
+ \}
+\item 
+enum \mbox{\hyperlink{compiler_8c_a42a11575cc237e37732d560240e04371}{Function\+Type}} \{ \mbox{\hyperlink{compiler_8c_a42a11575cc237e37732d560240e04371ae40264fa7bcc3bc4091d70ddd42bd542}{TYPE\+\_\+\+FUNCTION}}
+, \mbox{\hyperlink{compiler_8c_a42a11575cc237e37732d560240e04371a115568dc145ea72433c61ae5f3133b59}{TYPE\+\_\+\+SCRIPT}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{structBytecodeSeq}{Bytecode\+Seq}} $\ast$ \mbox{\hyperlink{compiler_8c_acc5eb5da5002a52c2f439d80d70cf6a2}{current\+Bytecode\+Seq}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_a18b9cf29085021b9ee4545422b7afaed}{error\+At}} (\mbox{\hyperlink{structToken}{Token}} $\ast$token, const char $\ast$message)
+\item 
+static void \mbox{\hyperlink{compiler_8c_aea04c53dbdea36d1fe28b97b44737a89}{error}} (const char $\ast$message)
+\item 
+static void \mbox{\hyperlink{compiler_8c_ac6f660e2770b9f8857421b6ac341e215}{error\+At\+Current}} (const char $\ast$message)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a53df82b13a45ef09bab4f444649dc509}{advance}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_aad9be35bead8d02e48a7c296c899e049}{consume}} (\mbox{\hyperlink{scanner_8h_aa520fbf142ba1e7e659590c07da31921}{Token\+Type}} type, const char $\ast$message)
+\item 
+static bool \mbox{\hyperlink{compiler_8c_a958b6d13dd0e48902b068780110af48d}{check}} (\mbox{\hyperlink{scanner_8h_aa520fbf142ba1e7e659590c07da31921}{Token\+Type}} type)
+\item 
+static bool \mbox{\hyperlink{compiler_8c_a298ead74523a4257c38720b2172a4de8}{match}} (\mbox{\hyperlink{scanner_8h_aa520fbf142ba1e7e659590c07da31921}{Token\+Type}} type)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a4d9ac7053f4dde6ebb2288f627c90f3a}{emit\+Byte}} (uint8\+\_\+t byte)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a9561bb0d91b8502ee632708902d7d65a}{emit\+Bytes}} (uint8\+\_\+t byte1, uint8\+\_\+t byte2)
+\item 
+static void \mbox{\hyperlink{compiler_8c_aea847bc9683550a98eaacbfd8e58b208}{emit\+Loop}} (int loop\+Start)
+\item 
+static int \mbox{\hyperlink{compiler_8c_ac56b2b720aea4605ff14713b7e496414}{emit\+Jump}} (uint8\+\_\+t instruction)
+\item 
+static void \mbox{\hyperlink{compiler_8c_afe0191ede519db4b06c4db2a37551969}{emit\+Return}} ()
+\item 
+static uint8\+\_\+t \mbox{\hyperlink{compiler_8c_aa341b0aef51689e6eeae0a2bb3bbcdc9}{make\+Constant}} (\mbox{\hyperlink{structValue}{Value}} value)
+\item 
+static void \mbox{\hyperlink{compiler_8c_ae8c161f19c2f197c1441ab8c6d564ec2}{emit\+Constant}} (\mbox{\hyperlink{structValue}{Value}} value)
+\item 
+static void \mbox{\hyperlink{compiler_8c_ad048700a93d778b1d6763df2632cc49f}{patch\+Jump}} (int offset)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a84f9521ca3f9ef4a902c020d0bbeeaf3}{init\+Compiler}} (\mbox{\hyperlink{structCompiler}{Compiler}} $\ast$compiler, \mbox{\hyperlink{compiler_8c_a42a11575cc237e37732d560240e04371}{Function\+Type}} type)
+\item 
+static \mbox{\hyperlink{structObjFunction}{Obj\+Function}} $\ast$ \mbox{\hyperlink{compiler_8c_a9210e3b11442d4f4bfa4a8b54d79baa8}{end\+Compiler}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_a647813feb411697a36cd693d24c683aa}{begin\+Scope}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_ac905f7c94f9f8917a1e987328f391642}{end\+Scope}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_a23456be303220992a31634dd13f2652e}{expression}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_ad2dc9d9cacd16eb837f9f1ffafaf572b}{statement}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_a22b234f10823688c7cfd20e9d613ab4c}{declaration}} ()
+\item 
+static \mbox{\hyperlink{structParseRule}{Parse\+Rule}} $\ast$ \mbox{\hyperlink{compiler_8c_a1cc11511a7aab4655e3960fc0fb5fa27}{get\+Rule}} (\mbox{\hyperlink{scanner_8h_aa520fbf142ba1e7e659590c07da31921}{Token\+Type}} type)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a6e9c3203bcd2b195b94651e1c2edc362}{parse\+Precedence}} (\mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006}{Precedence}} precedence)
+\item 
+static uint8\+\_\+t \mbox{\hyperlink{compiler_8c_aceb14bfde69b828d7e685093b51d8d35}{identifier\+Constant}} (\mbox{\hyperlink{structToken}{Token}} $\ast$name)
+\item 
+static bool \mbox{\hyperlink{compiler_8c_a8ac4575a8b504048a3969db725a29e61}{identifiers\+Equal}} (\mbox{\hyperlink{structToken}{Token}} $\ast$a, \mbox{\hyperlink{structToken}{Token}} $\ast$b)
+\item 
+static int \mbox{\hyperlink{compiler_8c_a373d024ae6394731d8861799b0c5cdb0}{resolve\+Local}} (\mbox{\hyperlink{structCompiler}{Compiler}} $\ast$compiler, \mbox{\hyperlink{structToken}{Token}} $\ast$name)
+\item 
+static void \mbox{\hyperlink{compiler_8c_ab8bffb5e1a00c3f1973e869274cb0bcb}{add\+Local}} (\mbox{\hyperlink{structToken}{Token}} name)
+\item 
+static void \mbox{\hyperlink{compiler_8c_aca6dcf7e5b404087771ca55f41bdb3b7}{declare\+Variable}} ()
+\item 
+static uint8\+\_\+t \mbox{\hyperlink{compiler_8c_a38408b3d67b374a80b1f4d6ee848c4b1}{parse\+Variable}} (const char $\ast$error\+Message)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a0fdba1802bdbdb64591729a864228bec}{mark\+Initialized}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_af04ceaa2a1e19c6772cbd0ad7d0a5fa7}{define\+Variable}} (uint8\+\_\+t global)
+\item 
+static uint8\+\_\+t \mbox{\hyperlink{compiler_8c_a281509a24705475cf14b62d495ef42ed}{argument\+List}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_a3ff7a8e95770facf4e6044e156c24878}{and\+\_\+}} (bool can\+Assign)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a651e2be489a08fe16e7ca81543ca405a}{binary}} (bool can\+Assign)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a8c7763bb8ab7f4e56cfebe926dc85d3f}{call}} (bool can\+Assign)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a286258b634924f322e9316a6f25dbc04}{literal}} (bool can\+Assign)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a31fb354f8697d9d80f9fd05048879a78}{grouping}} (bool can\+Assign)
+\item 
+static void \mbox{\hyperlink{compiler_8c_ae4da5ffc9d1701e57183be3b0cbe7ad2}{number}} (bool can\+Assign)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a976161e2b3d45ecb036ef3aa64e53410}{or\+\_\+}} (bool can\+Assign)
+\item 
+static void \mbox{\hyperlink{compiler_8c_ac9c5df4563ea6670b99c5ed85d6e0e88}{string}} (bool can\+Assign)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a521a8bf8be6a95acc9836c5cfdaf92b9}{named\+Variable}} (\mbox{\hyperlink{structToken}{Token}} name, bool can\+Assign)
+\item 
+static void \mbox{\hyperlink{compiler_8c_adc700060cc3b501aa9f1c011f48d21f0}{variable}} (bool can\+Assign)
+\item 
+static void \mbox{\hyperlink{compiler_8c_ac38ba7e5e46dcc6ac277760a9c88c073}{unary}} (bool can\+Assign)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a0aab9630bde8f7c05fb4d51c887725d9}{var\+Declaration}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_a5de3ef0cc3082b1a405cac655b0de945}{expression\+Statement}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_ae46b5383533becd4af59e7b0c17ce9b3}{for\+Statement}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_ad628fc5323a9109f2500f4aff150bd6c}{if\+Statement}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_a0a5a515f3c09e23aec7a7e5f51f9eb83}{block}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_abd005447e0aa471b0a37480a0a8e9d21}{function}} (\mbox{\hyperlink{compiler_8c_a42a11575cc237e37732d560240e04371}{Function\+Type}} type)
+\item 
+static void \mbox{\hyperlink{compiler_8c_a2c53faeb88bd98ebf1012c621fd88894}{fun\+Declaration}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_a1ca41efc7aa3919f4fdf3249d5e83e0f}{print\+Statement}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_a6ca4d9c96bbd3087075d1c9e9193c1f5}{return\+Statement}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_a283b4a1ddc70ec4e05b535e42af065d1}{while\+Statement}} ()
+\item 
+static void \mbox{\hyperlink{compiler_8c_a220fa5a973fe07409c6d2160521e0ee1}{synchronize}} ()
+\item 
+\mbox{\hyperlink{structObjFunction}{Obj\+Function}} $\ast$ \mbox{\hyperlink{compiler_8c_a1746dc20f51cadbee176e158db7d1b19}{compile}} (const char $\ast$source)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structParser}{Parser}} \mbox{\hyperlink{compiler_8c_aebf109e8c8f8e39ad7f1c2ff919f25ca}{parser}}
+\item 
+\mbox{\hyperlink{structCompiler}{Compiler}} $\ast$ \mbox{\hyperlink{compiler_8c_ae256d015064cf04c95da90f15d2a315c}{current}} = NULL
+\item 
+\mbox{\hyperlink{structBytecodeSeq}{Bytecode\+Seq}} $\ast$ \mbox{\hyperlink{compiler_8c_aa8f899722067ca05978f34f00f37bcc4}{compile\+Bytecode\+Seq}}
+\item 
+\mbox{\hyperlink{structParseRule}{Parse\+Rule}} \mbox{\hyperlink{compiler_8c_a909933a11c8b28723aced13e955d835c}{rules}} \mbox{[}$\,$\mbox{]}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{compiler_8c_a59d46fe4edc33c8cc818e3aced56de29}\label{compiler_8c_a59d46fe4edc33c8cc818e3aced56de29}} 
+\index{compiler.c@{compiler.c}!Compiler@{Compiler}}
+\index{Compiler@{Compiler}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{Compiler}{Compiler}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structCompiler}{Compiler}} \mbox{\hyperlink{structCompiler}{Compiler}}}
+
+\mbox{\Hypertarget{compiler_8c_ac1c6f24ed3208486ef313366b0c0f63f}\label{compiler_8c_ac1c6f24ed3208486ef313366b0c0f63f}} 
+\index{compiler.c@{compiler.c}!ParseFn@{ParseFn}}
+\index{ParseFn@{ParseFn}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{ParseFn}{ParseFn}}
+{\footnotesize\ttfamily typedef void($\ast$ Parse\+Fn) (bool can\+Assign)}
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{compiler_8c_a42a11575cc237e37732d560240e04371}\label{compiler_8c_a42a11575cc237e37732d560240e04371}} 
+\index{compiler.c@{compiler.c}!FunctionType@{FunctionType}}
+\index{FunctionType@{FunctionType}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{FunctionType}{FunctionType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{compiler_8c_a42a11575cc237e37732d560240e04371}{Function\+Type}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TYPE\_FUNCTION@{TYPE\_FUNCTION}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!TYPE\_FUNCTION@{TYPE\_FUNCTION}}}\mbox{\Hypertarget{compiler_8c_a42a11575cc237e37732d560240e04371ae40264fa7bcc3bc4091d70ddd42bd542}\label{compiler_8c_a42a11575cc237e37732d560240e04371ae40264fa7bcc3bc4091d70ddd42bd542}} 
+TYPE\+\_\+\+FUNCTION&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{TYPE\_SCRIPT@{TYPE\_SCRIPT}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!TYPE\_SCRIPT@{TYPE\_SCRIPT}}}\mbox{\Hypertarget{compiler_8c_a42a11575cc237e37732d560240e04371a115568dc145ea72433c61ae5f3133b59}\label{compiler_8c_a42a11575cc237e37732d560240e04371a115568dc145ea72433c61ae5f3133b59}} 
+TYPE\+\_\+\+SCRIPT&\\
+\hline
+
+\end{DoxyEnumFields}
+\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006}} 
+\index{compiler.c@{compiler.c}!Precedence@{Precedence}}
+\index{Precedence@{Precedence}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{Precedence}{Precedence}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006}{Precedence}}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PREC\_NONE@{PREC\_NONE}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!PREC\_NONE@{PREC\_NONE}}}\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a2be887a6eb50f60bf0d6643d5986289c}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a2be887a6eb50f60bf0d6643d5986289c}} 
+PREC\+\_\+\+NONE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PREC\_ASSIGNMENT@{PREC\_ASSIGNMENT}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!PREC\_ASSIGNMENT@{PREC\_ASSIGNMENT}}}\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a5576e7223ab7e815dc3f0daefcaf5fe3}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a5576e7223ab7e815dc3f0daefcaf5fe3}} 
+PREC\+\_\+\+ASSIGNMENT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PREC\_OR@{PREC\_OR}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!PREC\_OR@{PREC\_OR}}}\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a461532d1f6f71dc9a5f506644cdad7e5}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a461532d1f6f71dc9a5f506644cdad7e5}} 
+PREC\+\_\+\+OR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PREC\_AND@{PREC\_AND}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!PREC\_AND@{PREC\_AND}}}\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006afd1def1a9d1ac4d3e573e407227c8f56}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006afd1def1a9d1ac4d3e573e407227c8f56}} 
+PREC\+\_\+\+AND&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PREC\_EQUALITY@{PREC\_EQUALITY}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!PREC\_EQUALITY@{PREC\_EQUALITY}}}\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a336bf98f3bbc6c9ec4436e7728ca9389}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a336bf98f3bbc6c9ec4436e7728ca9389}} 
+PREC\+\_\+\+EQUALITY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PREC\_COMPARISON@{PREC\_COMPARISON}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!PREC\_COMPARISON@{PREC\_COMPARISON}}}\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a97393227c3b9b3664833fb648de3c8af}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a97393227c3b9b3664833fb648de3c8af}} 
+PREC\+\_\+\+COMPARISON&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PREC\_TERM@{PREC\_TERM}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!PREC\_TERM@{PREC\_TERM}}}\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006af8854b546d1ca4c09e1f8684a3cd6af3}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006af8854b546d1ca4c09e1f8684a3cd6af3}} 
+PREC\+\_\+\+TERM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PREC\_FACTOR@{PREC\_FACTOR}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!PREC\_FACTOR@{PREC\_FACTOR}}}\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a512d339d43a8a07254dc51ae5cbf61de}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a512d339d43a8a07254dc51ae5cbf61de}} 
+PREC\+\_\+\+FACTOR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PREC\_UNARY@{PREC\_UNARY}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!PREC\_UNARY@{PREC\_UNARY}}}\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a0f109c9eef878893165c6180c86caa96}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a0f109c9eef878893165c6180c86caa96}} 
+PREC\+\_\+\+UNARY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PREC\_CALL@{PREC\_CALL}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!PREC\_CALL@{PREC\_CALL}}}\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a935e24750e9ae953c5291c5567be873a}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a935e24750e9ae953c5291c5567be873a}} 
+PREC\+\_\+\+CALL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{PREC\_PRIMARY@{PREC\_PRIMARY}!compiler.c@{compiler.c}}\index{compiler.c@{compiler.c}!PREC\_PRIMARY@{PREC\_PRIMARY}}}\mbox{\Hypertarget{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a59b5adac5b20fde37b2be48df04b90de}\label{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006a59b5adac5b20fde37b2be48df04b90de}} 
+PREC\+\_\+\+PRIMARY&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{compiler_8c_ab8bffb5e1a00c3f1973e869274cb0bcb}\label{compiler_8c_ab8bffb5e1a00c3f1973e869274cb0bcb}} 
+\index{compiler.c@{compiler.c}!addLocal@{addLocal}}
+\index{addLocal@{addLocal}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{addLocal()}{addLocal()}}
+{\footnotesize\ttfamily static void add\+Local (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structToken}{Token}}}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=302pt]{compiler_8c_ab8bffb5e1a00c3f1973e869274cb0bcb_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a53df82b13a45ef09bab4f444649dc509}\label{compiler_8c_a53df82b13a45ef09bab4f444649dc509}} 
+\index{compiler.c@{compiler.c}!advance@{advance}}
+\index{advance@{advance}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{advance()}{advance()}}
+{\footnotesize\ttfamily static void advance (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a53df82b13a45ef09bab4f444649dc509_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a3ff7a8e95770facf4e6044e156c24878}\label{compiler_8c_a3ff7a8e95770facf4e6044e156c24878}} 
+\index{compiler.c@{compiler.c}!and\_@{and\_}}
+\index{and\_@{and\_}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{and\_()}{and\_()}}
+{\footnotesize\ttfamily static void and\+\_\+ (\begin{DoxyParamCaption}\item[{bool}]{can\+Assign }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a3ff7a8e95770facf4e6044e156c24878_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a281509a24705475cf14b62d495ef42ed}\label{compiler_8c_a281509a24705475cf14b62d495ef42ed}} 
+\index{compiler.c@{compiler.c}!argumentList@{argumentList}}
+\index{argumentList@{argumentList}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{argumentList()}{argumentList()}}
+{\footnotesize\ttfamily static uint8\+\_\+t argument\+List (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a281509a24705475cf14b62d495ef42ed_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a647813feb411697a36cd693d24c683aa}\label{compiler_8c_a647813feb411697a36cd693d24c683aa}} 
+\index{compiler.c@{compiler.c}!beginScope@{beginScope}}
+\index{beginScope@{beginScope}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{beginScope()}{beginScope()}}
+{\footnotesize\ttfamily static void begin\+Scope (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{compiler_8c_a651e2be489a08fe16e7ca81543ca405a}\label{compiler_8c_a651e2be489a08fe16e7ca81543ca405a}} 
+\index{compiler.c@{compiler.c}!binary@{binary}}
+\index{binary@{binary}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{binary()}{binary()}}
+{\footnotesize\ttfamily static void binary (\begin{DoxyParamCaption}\item[{bool}]{can\+Assign }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a651e2be489a08fe16e7ca81543ca405a_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a0a5a515f3c09e23aec7a7e5f51f9eb83}\label{compiler_8c_a0a5a515f3c09e23aec7a7e5f51f9eb83}} 
+\index{compiler.c@{compiler.c}!block@{block}}
+\index{block@{block}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{block()}{block()}}
+{\footnotesize\ttfamily static void block (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a0a5a515f3c09e23aec7a7e5f51f9eb83_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a8c7763bb8ab7f4e56cfebe926dc85d3f}\label{compiler_8c_a8c7763bb8ab7f4e56cfebe926dc85d3f}} 
+\index{compiler.c@{compiler.c}!call@{call}}
+\index{call@{call}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{call()}{call()}}
+{\footnotesize\ttfamily static void call (\begin{DoxyParamCaption}\item[{bool}]{can\+Assign }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a8c7763bb8ab7f4e56cfebe926dc85d3f_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a958b6d13dd0e48902b068780110af48d}\label{compiler_8c_a958b6d13dd0e48902b068780110af48d}} 
+\index{compiler.c@{compiler.c}!check@{check}}
+\index{check@{check}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{check()}{check()}}
+{\footnotesize\ttfamily static bool check (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{scanner_8h_aa520fbf142ba1e7e659590c07da31921}{Token\+Type}}}]{type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{compiler_8c_a1746dc20f51cadbee176e158db7d1b19}\label{compiler_8c_a1746dc20f51cadbee176e158db7d1b19}} 
+\index{compiler.c@{compiler.c}!compile@{compile}}
+\index{compile@{compile}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{compile()}{compile()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structObjFunction}{Obj\+Function}}$\ast$ compile (\begin{DoxyParamCaption}\item[{const char $\ast$}]{source }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a1746dc20f51cadbee176e158db7d1b19_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_aad9be35bead8d02e48a7c296c899e049}\label{compiler_8c_aad9be35bead8d02e48a7c296c899e049}} 
+\index{compiler.c@{compiler.c}!consume@{consume}}
+\index{consume@{consume}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{consume()}{consume()}}
+{\footnotesize\ttfamily static void consume (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{scanner_8h_aa520fbf142ba1e7e659590c07da31921}{Token\+Type}}}]{type,  }\item[{const char $\ast$}]{message }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_aad9be35bead8d02e48a7c296c899e049_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_acc5eb5da5002a52c2f439d80d70cf6a2}\label{compiler_8c_acc5eb5da5002a52c2f439d80d70cf6a2}} 
+\index{compiler.c@{compiler.c}!currentBytecodeSeq@{currentBytecodeSeq}}
+\index{currentBytecodeSeq@{currentBytecodeSeq}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{currentBytecodeSeq()}{currentBytecodeSeq()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{structBytecodeSeq}{Bytecode\+Seq}}$\ast$ current\+Bytecode\+Seq (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{compiler_8c_a22b234f10823688c7cfd20e9d613ab4c}\label{compiler_8c_a22b234f10823688c7cfd20e9d613ab4c}} 
+\index{compiler.c@{compiler.c}!declaration@{declaration}}
+\index{declaration@{declaration}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{declaration()}{declaration()}}
+{\footnotesize\ttfamily static void declaration (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a22b234f10823688c7cfd20e9d613ab4c_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_aca6dcf7e5b404087771ca55f41bdb3b7}\label{compiler_8c_aca6dcf7e5b404087771ca55f41bdb3b7}} 
+\index{compiler.c@{compiler.c}!declareVariable@{declareVariable}}
+\index{declareVariable@{declareVariable}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{declareVariable()}{declareVariable()}}
+{\footnotesize\ttfamily static void declare\+Variable (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_aca6dcf7e5b404087771ca55f41bdb3b7_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_af04ceaa2a1e19c6772cbd0ad7d0a5fa7}\label{compiler_8c_af04ceaa2a1e19c6772cbd0ad7d0a5fa7}} 
+\index{compiler.c@{compiler.c}!defineVariable@{defineVariable}}
+\index{defineVariable@{defineVariable}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{defineVariable()}{defineVariable()}}
+{\footnotesize\ttfamily static void define\+Variable (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{global }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_af04ceaa2a1e19c6772cbd0ad7d0a5fa7_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a4d9ac7053f4dde6ebb2288f627c90f3a}\label{compiler_8c_a4d9ac7053f4dde6ebb2288f627c90f3a}} 
+\index{compiler.c@{compiler.c}!emitByte@{emitByte}}
+\index{emitByte@{emitByte}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{emitByte()}{emitByte()}}
+{\footnotesize\ttfamily static void emit\+Byte (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{byte }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=293pt]{compiler_8c_a4d9ac7053f4dde6ebb2288f627c90f3a_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a9561bb0d91b8502ee632708902d7d65a}\label{compiler_8c_a9561bb0d91b8502ee632708902d7d65a}} 
+\index{compiler.c@{compiler.c}!emitBytes@{emitBytes}}
+\index{emitBytes@{emitBytes}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{emitBytes()}{emitBytes()}}
+{\footnotesize\ttfamily static void emit\+Bytes (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{byte1,  }\item[{uint8\+\_\+t}]{byte2 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a9561bb0d91b8502ee632708902d7d65a_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_ae8c161f19c2f197c1441ab8c6d564ec2}\label{compiler_8c_ae8c161f19c2f197c1441ab8c6d564ec2}} 
+\index{compiler.c@{compiler.c}!emitConstant@{emitConstant}}
+\index{emitConstant@{emitConstant}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{emitConstant()}{emitConstant()}}
+{\footnotesize\ttfamily static void emit\+Constant (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structValue}{Value}}}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_ae8c161f19c2f197c1441ab8c6d564ec2_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_ac56b2b720aea4605ff14713b7e496414}\label{compiler_8c_ac56b2b720aea4605ff14713b7e496414}} 
+\index{compiler.c@{compiler.c}!emitJump@{emitJump}}
+\index{emitJump@{emitJump}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{emitJump()}{emitJump()}}
+{\footnotesize\ttfamily static int emit\+Jump (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{instruction }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_ac56b2b720aea4605ff14713b7e496414_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_aea847bc9683550a98eaacbfd8e58b208}\label{compiler_8c_aea847bc9683550a98eaacbfd8e58b208}} 
+\index{compiler.c@{compiler.c}!emitLoop@{emitLoop}}
+\index{emitLoop@{emitLoop}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{emitLoop()}{emitLoop()}}
+{\footnotesize\ttfamily static void emit\+Loop (\begin{DoxyParamCaption}\item[{int}]{loop\+Start }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_aea847bc9683550a98eaacbfd8e58b208_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_afe0191ede519db4b06c4db2a37551969}\label{compiler_8c_afe0191ede519db4b06c4db2a37551969}} 
+\index{compiler.c@{compiler.c}!emitReturn@{emitReturn}}
+\index{emitReturn@{emitReturn}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{emitReturn()}{emitReturn()}}
+{\footnotesize\ttfamily static void emit\+Return (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_afe0191ede519db4b06c4db2a37551969_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a9210e3b11442d4f4bfa4a8b54d79baa8}\label{compiler_8c_a9210e3b11442d4f4bfa4a8b54d79baa8}} 
+\index{compiler.c@{compiler.c}!endCompiler@{endCompiler}}
+\index{endCompiler@{endCompiler}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{endCompiler()}{endCompiler()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{structObjFunction}{Obj\+Function}}$\ast$ end\+Compiler (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a9210e3b11442d4f4bfa4a8b54d79baa8_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_ac905f7c94f9f8917a1e987328f391642}\label{compiler_8c_ac905f7c94f9f8917a1e987328f391642}} 
+\index{compiler.c@{compiler.c}!endScope@{endScope}}
+\index{endScope@{endScope}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{endScope()}{endScope()}}
+{\footnotesize\ttfamily static void end\+Scope (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_ac905f7c94f9f8917a1e987328f391642_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_aea04c53dbdea36d1fe28b97b44737a89}\label{compiler_8c_aea04c53dbdea36d1fe28b97b44737a89}} 
+\index{compiler.c@{compiler.c}!error@{error}}
+\index{error@{error}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{error()}{error()}}
+{\footnotesize\ttfamily static void error (\begin{DoxyParamCaption}\item[{const char $\ast$}]{message }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=206pt]{compiler_8c_aea04c53dbdea36d1fe28b97b44737a89_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a18b9cf29085021b9ee4545422b7afaed}\label{compiler_8c_a18b9cf29085021b9ee4545422b7afaed}} 
+\index{compiler.c@{compiler.c}!errorAt@{errorAt}}
+\index{errorAt@{errorAt}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{errorAt()}{errorAt()}}
+{\footnotesize\ttfamily static void error\+At (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structToken}{Token}} $\ast$}]{token,  }\item[{const char $\ast$}]{message }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{compiler_8c_ac6f660e2770b9f8857421b6ac341e215}\label{compiler_8c_ac6f660e2770b9f8857421b6ac341e215}} 
+\index{compiler.c@{compiler.c}!errorAtCurrent@{errorAtCurrent}}
+\index{errorAtCurrent@{errorAtCurrent}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{errorAtCurrent()}{errorAtCurrent()}}
+{\footnotesize\ttfamily static void error\+At\+Current (\begin{DoxyParamCaption}\item[{const char $\ast$}]{message }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=252pt]{compiler_8c_ac6f660e2770b9f8857421b6ac341e215_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a23456be303220992a31634dd13f2652e}\label{compiler_8c_a23456be303220992a31634dd13f2652e}} 
+\index{compiler.c@{compiler.c}!expression@{expression}}
+\index{expression@{expression}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{expression()}{expression()}}
+{\footnotesize\ttfamily static void expression (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a23456be303220992a31634dd13f2652e_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a5de3ef0cc3082b1a405cac655b0de945}\label{compiler_8c_a5de3ef0cc3082b1a405cac655b0de945}} 
+\index{compiler.c@{compiler.c}!expressionStatement@{expressionStatement}}
+\index{expressionStatement@{expressionStatement}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{expressionStatement()}{expressionStatement()}}
+{\footnotesize\ttfamily static void expression\+Statement (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a5de3ef0cc3082b1a405cac655b0de945_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_ae46b5383533becd4af59e7b0c17ce9b3}\label{compiler_8c_ae46b5383533becd4af59e7b0c17ce9b3}} 
+\index{compiler.c@{compiler.c}!forStatement@{forStatement}}
+\index{forStatement@{forStatement}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{forStatement()}{forStatement()}}
+{\footnotesize\ttfamily static void for\+Statement (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_ae46b5383533becd4af59e7b0c17ce9b3_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_abd005447e0aa471b0a37480a0a8e9d21}\label{compiler_8c_abd005447e0aa471b0a37480a0a8e9d21}} 
+\index{compiler.c@{compiler.c}!function@{function}}
+\index{function@{function}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{function()}{function()}}
+{\footnotesize\ttfamily static void function (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{compiler_8c_a42a11575cc237e37732d560240e04371}{Function\+Type}}}]{type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_abd005447e0aa471b0a37480a0a8e9d21_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a2c53faeb88bd98ebf1012c621fd88894}\label{compiler_8c_a2c53faeb88bd98ebf1012c621fd88894}} 
+\index{compiler.c@{compiler.c}!funDeclaration@{funDeclaration}}
+\index{funDeclaration@{funDeclaration}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{funDeclaration()}{funDeclaration()}}
+{\footnotesize\ttfamily static void fun\+Declaration (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a2c53faeb88bd98ebf1012c621fd88894_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a1cc11511a7aab4655e3960fc0fb5fa27}\label{compiler_8c_a1cc11511a7aab4655e3960fc0fb5fa27}} 
+\index{compiler.c@{compiler.c}!getRule@{getRule}}
+\index{getRule@{getRule}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{getRule()}{getRule()}}
+{\footnotesize\ttfamily static \mbox{\hyperlink{structParseRule}{Parse\+Rule}} $\ast$ get\+Rule (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{scanner_8h_aa520fbf142ba1e7e659590c07da31921}{Token\+Type}}}]{type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{compiler_8c_a31fb354f8697d9d80f9fd05048879a78}\label{compiler_8c_a31fb354f8697d9d80f9fd05048879a78}} 
+\index{compiler.c@{compiler.c}!grouping@{grouping}}
+\index{grouping@{grouping}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{grouping()}{grouping()}}
+{\footnotesize\ttfamily static void grouping (\begin{DoxyParamCaption}\item[{bool}]{can\+Assign }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a31fb354f8697d9d80f9fd05048879a78_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_aceb14bfde69b828d7e685093b51d8d35}\label{compiler_8c_aceb14bfde69b828d7e685093b51d8d35}} 
+\index{compiler.c@{compiler.c}!identifierConstant@{identifierConstant}}
+\index{identifierConstant@{identifierConstant}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{identifierConstant()}{identifierConstant()}}
+{\footnotesize\ttfamily static uint8\+\_\+t identifier\+Constant (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structToken}{Token}} $\ast$}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_aceb14bfde69b828d7e685093b51d8d35_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a8ac4575a8b504048a3969db725a29e61}\label{compiler_8c_a8ac4575a8b504048a3969db725a29e61}} 
+\index{compiler.c@{compiler.c}!identifiersEqual@{identifiersEqual}}
+\index{identifiersEqual@{identifiersEqual}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{identifiersEqual()}{identifiersEqual()}}
+{\footnotesize\ttfamily static bool identifiers\+Equal (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structToken}{Token}} $\ast$}]{a,  }\item[{\mbox{\hyperlink{structToken}{Token}} $\ast$}]{b }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{compiler_8c_ad628fc5323a9109f2500f4aff150bd6c}\label{compiler_8c_ad628fc5323a9109f2500f4aff150bd6c}} 
+\index{compiler.c@{compiler.c}!ifStatement@{ifStatement}}
+\index{ifStatement@{ifStatement}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{ifStatement()}{ifStatement()}}
+{\footnotesize\ttfamily static void if\+Statement (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_ad628fc5323a9109f2500f4aff150bd6c_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a84f9521ca3f9ef4a902c020d0bbeeaf3}\label{compiler_8c_a84f9521ca3f9ef4a902c020d0bbeeaf3}} 
+\index{compiler.c@{compiler.c}!initCompiler@{initCompiler}}
+\index{initCompiler@{initCompiler}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{initCompiler()}{initCompiler()}}
+{\footnotesize\ttfamily static void init\+Compiler (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structCompiler}{Compiler}} $\ast$}]{compiler,  }\item[{\mbox{\hyperlink{compiler_8c_a42a11575cc237e37732d560240e04371}{Function\+Type}}}]{type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a84f9521ca3f9ef4a902c020d0bbeeaf3_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a286258b634924f322e9316a6f25dbc04}\label{compiler_8c_a286258b634924f322e9316a6f25dbc04}} 
+\index{compiler.c@{compiler.c}!literal@{literal}}
+\index{literal@{literal}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{literal()}{literal()}}
+{\footnotesize\ttfamily static void literal (\begin{DoxyParamCaption}\item[{bool}]{can\+Assign }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a286258b634924f322e9316a6f25dbc04_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_aa341b0aef51689e6eeae0a2bb3bbcdc9}\label{compiler_8c_aa341b0aef51689e6eeae0a2bb3bbcdc9}} 
+\index{compiler.c@{compiler.c}!makeConstant@{makeConstant}}
+\index{makeConstant@{makeConstant}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{makeConstant()}{makeConstant()}}
+{\footnotesize\ttfamily static uint8\+\_\+t make\+Constant (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structValue}{Value}}}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_aa341b0aef51689e6eeae0a2bb3bbcdc9_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a0fdba1802bdbdb64591729a864228bec}\label{compiler_8c_a0fdba1802bdbdb64591729a864228bec}} 
+\index{compiler.c@{compiler.c}!markInitialized@{markInitialized}}
+\index{markInitialized@{markInitialized}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{markInitialized()}{markInitialized()}}
+{\footnotesize\ttfamily static void mark\+Initialized (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{compiler_8c_a298ead74523a4257c38720b2172a4de8}\label{compiler_8c_a298ead74523a4257c38720b2172a4de8}} 
+\index{compiler.c@{compiler.c}!match@{match}}
+\index{match@{match}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{match()}{match()}}
+{\footnotesize\ttfamily static bool match (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{scanner_8h_aa520fbf142ba1e7e659590c07da31921}{Token\+Type}}}]{type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a298ead74523a4257c38720b2172a4de8_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a521a8bf8be6a95acc9836c5cfdaf92b9}\label{compiler_8c_a521a8bf8be6a95acc9836c5cfdaf92b9}} 
+\index{compiler.c@{compiler.c}!namedVariable@{namedVariable}}
+\index{namedVariable@{namedVariable}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{namedVariable()}{namedVariable()}}
+{\footnotesize\ttfamily static void named\+Variable (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structToken}{Token}}}]{name,  }\item[{bool}]{can\+Assign }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a521a8bf8be6a95acc9836c5cfdaf92b9_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_ae4da5ffc9d1701e57183be3b0cbe7ad2}\label{compiler_8c_ae4da5ffc9d1701e57183be3b0cbe7ad2}} 
+\index{compiler.c@{compiler.c}!number@{number}}
+\index{number@{number}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{number()}{number()}}
+{\footnotesize\ttfamily static void number (\begin{DoxyParamCaption}\item[{bool}]{can\+Assign }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_ae4da5ffc9d1701e57183be3b0cbe7ad2_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a976161e2b3d45ecb036ef3aa64e53410}\label{compiler_8c_a976161e2b3d45ecb036ef3aa64e53410}} 
+\index{compiler.c@{compiler.c}!or\_@{or\_}}
+\index{or\_@{or\_}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{or\_()}{or\_()}}
+{\footnotesize\ttfamily static void or\+\_\+ (\begin{DoxyParamCaption}\item[{bool}]{can\+Assign }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a976161e2b3d45ecb036ef3aa64e53410_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a6e9c3203bcd2b195b94651e1c2edc362}\label{compiler_8c_a6e9c3203bcd2b195b94651e1c2edc362}} 
+\index{compiler.c@{compiler.c}!parsePrecedence@{parsePrecedence}}
+\index{parsePrecedence@{parsePrecedence}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{parsePrecedence()}{parsePrecedence()}}
+{\footnotesize\ttfamily static void parse\+Precedence (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{compiler_8c_aa4e7d1a473d0280792d98ddb184d3006}{Precedence}}}]{precedence }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a6e9c3203bcd2b195b94651e1c2edc362_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a38408b3d67b374a80b1f4d6ee848c4b1}\label{compiler_8c_a38408b3d67b374a80b1f4d6ee848c4b1}} 
+\index{compiler.c@{compiler.c}!parseVariable@{parseVariable}}
+\index{parseVariable@{parseVariable}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{parseVariable()}{parseVariable()}}
+{\footnotesize\ttfamily static uint8\+\_\+t parse\+Variable (\begin{DoxyParamCaption}\item[{const char $\ast$}]{error\+Message }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a38408b3d67b374a80b1f4d6ee848c4b1_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_ad048700a93d778b1d6763df2632cc49f}\label{compiler_8c_ad048700a93d778b1d6763df2632cc49f}} 
+\index{compiler.c@{compiler.c}!patchJump@{patchJump}}
+\index{patchJump@{patchJump}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{patchJump()}{patchJump()}}
+{\footnotesize\ttfamily static void patch\+Jump (\begin{DoxyParamCaption}\item[{int}]{offset }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_ad048700a93d778b1d6763df2632cc49f_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a1ca41efc7aa3919f4fdf3249d5e83e0f}\label{compiler_8c_a1ca41efc7aa3919f4fdf3249d5e83e0f}} 
+\index{compiler.c@{compiler.c}!printStatement@{printStatement}}
+\index{printStatement@{printStatement}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{printStatement()}{printStatement()}}
+{\footnotesize\ttfamily static void print\+Statement (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a1ca41efc7aa3919f4fdf3249d5e83e0f_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a373d024ae6394731d8861799b0c5cdb0}\label{compiler_8c_a373d024ae6394731d8861799b0c5cdb0}} 
+\index{compiler.c@{compiler.c}!resolveLocal@{resolveLocal}}
+\index{resolveLocal@{resolveLocal}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{resolveLocal()}{resolveLocal()}}
+{\footnotesize\ttfamily static int resolve\+Local (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structCompiler}{Compiler}} $\ast$}]{compiler,  }\item[{\mbox{\hyperlink{structToken}{Token}} $\ast$}]{name }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a373d024ae6394731d8861799b0c5cdb0_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a6ca4d9c96bbd3087075d1c9e9193c1f5}\label{compiler_8c_a6ca4d9c96bbd3087075d1c9e9193c1f5}} 
+\index{compiler.c@{compiler.c}!returnStatement@{returnStatement}}
+\index{returnStatement@{returnStatement}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{returnStatement()}{returnStatement()}}
+{\footnotesize\ttfamily static void return\+Statement (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a6ca4d9c96bbd3087075d1c9e9193c1f5_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_ad2dc9d9cacd16eb837f9f1ffafaf572b}\label{compiler_8c_ad2dc9d9cacd16eb837f9f1ffafaf572b}} 
+\index{compiler.c@{compiler.c}!statement@{statement}}
+\index{statement@{statement}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{statement()}{statement()}}
+{\footnotesize\ttfamily static void statement (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_ad2dc9d9cacd16eb837f9f1ffafaf572b_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_ac9c5df4563ea6670b99c5ed85d6e0e88}\label{compiler_8c_ac9c5df4563ea6670b99c5ed85d6e0e88}} 
+\index{compiler.c@{compiler.c}!string@{string}}
+\index{string@{string}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{string()}{string()}}
+{\footnotesize\ttfamily static void string (\begin{DoxyParamCaption}\item[{bool}]{can\+Assign }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_ac9c5df4563ea6670b99c5ed85d6e0e88_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a220fa5a973fe07409c6d2160521e0ee1}\label{compiler_8c_a220fa5a973fe07409c6d2160521e0ee1}} 
+\index{compiler.c@{compiler.c}!synchronize@{synchronize}}
+\index{synchronize@{synchronize}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{synchronize()}{synchronize()}}
+{\footnotesize\ttfamily static void synchronize (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a220fa5a973fe07409c6d2160521e0ee1_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_ac38ba7e5e46dcc6ac277760a9c88c073}\label{compiler_8c_ac38ba7e5e46dcc6ac277760a9c88c073}} 
+\index{compiler.c@{compiler.c}!unary@{unary}}
+\index{unary@{unary}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{unary()}{unary()}}
+{\footnotesize\ttfamily static void unary (\begin{DoxyParamCaption}\item[{bool}]{can\+Assign }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_ac38ba7e5e46dcc6ac277760a9c88c073_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a0aab9630bde8f7c05fb4d51c887725d9}\label{compiler_8c_a0aab9630bde8f7c05fb4d51c887725d9}} 
+\index{compiler.c@{compiler.c}!varDeclaration@{varDeclaration}}
+\index{varDeclaration@{varDeclaration}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{varDeclaration()}{varDeclaration()}}
+{\footnotesize\ttfamily static void var\+Declaration (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a0aab9630bde8f7c05fb4d51c887725d9_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_adc700060cc3b501aa9f1c011f48d21f0}\label{compiler_8c_adc700060cc3b501aa9f1c011f48d21f0}} 
+\index{compiler.c@{compiler.c}!variable@{variable}}
+\index{variable@{variable}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{variable()}{variable()}}
+{\footnotesize\ttfamily static void variable (\begin{DoxyParamCaption}\item[{bool}]{can\+Assign }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_adc700060cc3b501aa9f1c011f48d21f0_cgraph}
+\end{center}
+\end{figure}
+\mbox{\Hypertarget{compiler_8c_a283b4a1ddc70ec4e05b535e42af065d1}\label{compiler_8c_a283b4a1ddc70ec4e05b535e42af065d1}} 
+\index{compiler.c@{compiler.c}!whileStatement@{whileStatement}}
+\index{whileStatement@{whileStatement}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{whileStatement()}{whileStatement()}}
+{\footnotesize\ttfamily static void while\+Statement (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{compiler_8c_a283b4a1ddc70ec4e05b535e42af065d1_cgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{compiler_8c_aa8f899722067ca05978f34f00f37bcc4}\label{compiler_8c_aa8f899722067ca05978f34f00f37bcc4}} 
+\index{compiler.c@{compiler.c}!compileBytecodeSeq@{compileBytecodeSeq}}
+\index{compileBytecodeSeq@{compileBytecodeSeq}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{compileBytecodeSeq}{compileBytecodeSeq}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structBytecodeSeq}{Bytecode\+Seq}}$\ast$ compile\+Bytecode\+Seq}
+
+\mbox{\Hypertarget{compiler_8c_ae256d015064cf04c95da90f15d2a315c}\label{compiler_8c_ae256d015064cf04c95da90f15d2a315c}} 
+\index{compiler.c@{compiler.c}!current@{current}}
+\index{current@{current}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{current}{current}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structCompiler}{Compiler}}$\ast$ current = NULL}
+
+\mbox{\Hypertarget{compiler_8c_aebf109e8c8f8e39ad7f1c2ff919f25ca}\label{compiler_8c_aebf109e8c8f8e39ad7f1c2ff919f25ca}} 
+\index{compiler.c@{compiler.c}!parser@{parser}}
+\index{parser@{parser}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{parser}{parser}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structParser}{Parser}} parser}
+
+\mbox{\Hypertarget{compiler_8c_a909933a11c8b28723aced13e955d835c}\label{compiler_8c_a909933a11c8b28723aced13e955d835c}} 
+\index{compiler.c@{compiler.c}!rules@{rules}}
+\index{rules@{rules}!compiler.c@{compiler.c}}
+\doxysubsubsection{\texorpdfstring{rules}{rules}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structParseRule}{Parse\+Rule}} rules\mbox{[}$\,$\mbox{]}}
+

@@ -5,4 +5,4 @@ print welcomeMessage;
 }
 
 
-hello("Saath");
+hello("World");
