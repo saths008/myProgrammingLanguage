@@ -4,5 +4,6 @@ fun fib(n) {
 }
 
 var start = clock();
-print fib(35);
+var res = fib(35);
 print clock() - start;
+print res;

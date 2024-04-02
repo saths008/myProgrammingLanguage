@@ -1,5 +1,7 @@
 # myProgrammingLanguage
 
+This project was made by following the book: "Crafting Interpreters" by Bob Nystrom, which can be found at: `https://craftinginterpreters.com/`.
+
 My own interpreted programming language.
 
 # Set up
@@ -20,7 +22,7 @@ googletest can be found at: `https://github.com/google/googletest`
 1.  Create and navigate to the build folder in the root.
 2.  run cmake .. (ie. put the output of cmake into the build folder)
 3.  run make
-4.  run the executable ./MyProgrammingLanguage_App
+4.  run the executable ./build/MyProgrammingLanguage_App
 
 # High-Level Overview
 

@@ -1,4 +1,4 @@
-fun hello(n) {
+fn hello(n) {
 
 var welcomeMessage = "Hello " + n;
 print welcomeMessage;
