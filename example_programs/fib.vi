@@ -3,7 +3,6 @@ fun fib(n) {
   return fib(n - 2) + fib(n - 1);
 }
 
-var start = clock();
-var res = fib(35);
-print clock() - start;
-print res;
+//No printing for benchmark
+//print fib(25);
+fib(25);

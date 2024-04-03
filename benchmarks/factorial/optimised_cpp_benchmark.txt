@@ -1,0 +1,9 @@
+===COMMANDS USED===
+g++ -std=c++17 factorial.cpp -o factorial      
+hyperfine --prepare 'sync; echo 3 | sudo tee /proc/sys/vm/drop_caches' './factorial'
+===================
+
+Benchmark 1: ./factorial
+  Time (mean ± σ):       4.3 ms ±   1.1 ms    [User: 0.4 ms, System: 0.1 ms]
+  Range (min … max):     0.0 ms …  25.5 ms    10000 runs
+

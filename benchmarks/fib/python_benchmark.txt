@@ -1,0 +1,6 @@
+===COMMAND USED=======
+hyperfine --runs 10000 --warmup 50 --prepare 'sync; echo 3 | sudo tee /proc/sys/vm/drop_caches' 'python3 fib.py' 
+=======================
+Benchmark 1: python3 fib.py
+  Time (mean ± σ):      39.1 ms ±   2.1 ms    [User: 22.7 ms, System: 3.0 ms]
+  Range (min … max):    36.8 ms … 157.7 ms    5000 runs

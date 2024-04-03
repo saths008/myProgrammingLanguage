@@ -1,0 +1,8 @@
+====COMMAND USED====
+hyperfine --runs 10000 --warmup 50 --prepare 'sync; echo 3 | sudo tee /proc/sys/vm/drop_caches' '../../build/MyProgrammingLanguage_App ../../example_programs/fib.vi' >> viltrum_benchmark.txt 
+====================
+
+Benchmark 1: ../../build/MyProgrammingLanguage_App ../../example_programs/fib.vi
+  Time (mean ± σ):      35.1 ms ±   3.3 ms    [User: 30.4 ms, System: 0.3 ms]
+  Range (min … max):    32.5 ms … 181.5 ms    5000 runs
+

@@ -1,0 +1,7 @@
+===COMMANDS USED===
+hyperfine --runs 10000 --warmup 50 --prepare 'sync; echo 3 | sudo tee /proc/sys/vm/drop_caches' '../../build/MyProgrammingLanguage_App ../../example_programs/factorial.vi'
+===================
+Benchmark 1: ../../build/MyProgrammingLanguage_App ../../example_programs/factorial.vi
+  Time (mean ± σ):      11.0 ms ±   4.6 ms    [User: 5.1 ms, System: 0.7 ms]
+  Range (min … max):     8.7 ms …  52.2 ms    10000 runs
+

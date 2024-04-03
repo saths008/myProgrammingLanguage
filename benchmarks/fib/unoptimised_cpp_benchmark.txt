@@ -1,0 +1,8 @@
+=====COMMAND USED=====
+======================
+
+Benchmark 1: ./unopt_fib
+  Time (mean ± σ):       9.1 ms ±   0.3 ms    [User: 1.9 ms, System: 0.6 ms]
+  Range (min … max):     7.7 ms …  11.5 ms    5000 runs
+ 
+

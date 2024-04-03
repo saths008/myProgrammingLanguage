@@ -1,0 +1,8 @@
+===Commands used =====
+g++ -std=c++17 -O2 -Wall -Wextra -Wshadow -Wconversion -Wfloat-equal -Wduplicated-cond -Wlogical-op factorial.cpp -o opt_factorial
+hyperfine --runs 10000 --warmup 50 --prepare 'sync; echo 3 | sudo tee /proc/sys/vm/drop_caches' './opt_fib' >> optimised_cpp_benchmark.txt 
+======================
+Benchmark 1: ./opt_fib
+  Time (mean ± σ):       8.8 ms ±   0.3 ms    [User: 1.6 ms, System: 0.6 ms]
+  Range (min … max):     7.9 ms …  14.9 ms    5000 runs
+

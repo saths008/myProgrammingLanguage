@@ -1,0 +1,7 @@
+===COMMANDS USED===
+hyperfine --runs 1000 --warmup 5 --prepare 'sync; echo 3 | sudo tee /proc/sys/vm/drop_caches' 'python3 factorial.py' >> python_benchmark.txt
+===================
+Benchmark 1: python3 factorial.py
+  Time (mean ± σ):      26.2 ms ±   9.4 ms    [User: 10.8 ms, System: 2.5 ms]
+  Range (min … max):    22.8 ms …  97.1 ms    10000 runs
+
