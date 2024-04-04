@@ -11,8 +11,7 @@ else{
 
 var start = 250;
 while (start >= 0){
-  factorial(start);
-  //No printing for benchmark
-  //print(factorial(start));
+  //factorial(start);
+  print(factorial(start));
   start = start - 1;
 }
